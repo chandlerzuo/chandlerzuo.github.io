@@ -10,7 +10,7 @@ After a moment I was clear: the fifth-dimension is the "time" that Matthew is ex
 
 A blockbuster as it is, Interstellar is criticized by some people saying that its scientific elements are too out-dated. I tend to have the same feeling. Talking about general relativity would be a cool thing twenty years ago. As a 2014 movie, maybe Nolan could have incorporated some new progress in theoretical physics. After all, general relativity was founded over half a century ago. Nolan should have taken up the challenge to introduce some more complicated, up-to-date theories to the general public. What I am saying is the [string theory](http://en.wikipedia.org/wiki/String_theory).
 
-![](https://dl.dropboxusercontent.com/u/72368739/blog/calabiyau/sheldon.jpg)
+![](https://dl.dropboxusercontent.com/s/6xhqsmut0hs4vrm/sheldon.jpg)
 
 OK, I will stop digressing any further. The main purpose of this post is using R to draw a cool graph related to the string theory. One of the most interesting in string theory is that our world has far more than four dimensions - it has TEN. Besides the four dimensions we are famaliar with, there are six other dimensions that are curled and wrapped in a tiny little form, the so called [Calabi-Yau manifold](http://en.wikipedia.org/wiki/Calabi%E2%80%93Yau_manifold).
 
@@ -18,10 +18,10 @@ Perhaps there is no way to visualize a six-dimensional object. But we can always
 
 So here is my work. Forgive my bad aesthetic tastes.
 
-![](https://dl.dropboxusercontent.com/u/72368739/blog/calabiyau/calabi_yau_5.jpg)
-![](https://dl.dropboxusercontent.com/u/72368739/blog/calabiyau/calabi_yau_5_side1.jpg)
-![](https://dl.dropboxusercontent.com/u/72368739/blog/calabiyau/calabi_yau_5_side2.jpg)
-![](https://dl.dropboxusercontent.com/u/72368739/blog/calabiyau/calabi_yau_5_side3.jpg)
+![](https://dl.dropboxusercontent.com/s/4xpgtg2au3vp6xj/calabi_yau_5.jpg)
+![](https://dl.dropboxusercontent.com/s/7u46rls36tyljri/calabi_yau_5_side1.jpg)
+![](https://dl.dropboxusercontent.com/s/lfbxi2xsy8fw0sc/calabi_yau_5_side2.jpg)
+![](https://dl.dropboxusercontent.com/s/xmeuzfd6f8suy9l/calabi_yau_5_side3.jpg)
 
 Here are the [codes](https://github.com/chandlerzuo/chandlerzuo.github.io/blob/master/codes/calabi_yau/calabi_yau.R).
 

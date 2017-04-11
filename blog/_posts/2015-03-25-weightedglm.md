@@ -56,7 +56,7 @@ So here are the ROC curves of our data:
 
 Proportion of Positives = 10%:
 
-![](https://dl.dropboxusercontent.com/u/72368739/blog/weightedglm/roc_10000_0.05.jpg)
+![](https://dl.dropboxusercontent.com/s/5litrfz6qrb8g7q/roc_10000_0.05.jpg)
 
 Here, I also mark the point with the probability cut-off 0.5 by the crossed circles. We see that the ROC curves of the three methods are quite close! The only difference is that at the cut-off 0.5, the naive logistic regression differs from the other two. It is much more conservative: much lower power but also much lower FPR. However, we can also pick higher cut-offs with the subsampled or the weighted logistic regression model, and achieve the same conservative result. Alternatively, if we pick lower cut-off for the naive logistic regression model, it can achieve the same result as the subsampled or the weighted logistic regression. If we pick the cut-off for each method to control the FPR at the same level, then none of the methods would have higher power than others. In that sense, no method is better than another.
 
@@ -64,11 +64,11 @@ We can get the ROC curves with data of different proportion of positives:
 
 Proportion of Positives = 13%. We can see similar patterns as the previous figure:
 
-![](https://dl.dropboxusercontent.com/u/72368739/blog/weightedglm/roc_10000_0.1.jpg)
+![](https://dl.dropboxusercontent.com/s/zomtuh8knog46kw/roc_10000_0.1.jpg)
 
 Proportion of Positives = 50%. In this last case, the three marked points overlap because the data is balanced between the two categories:
 
-![](https://dl.dropboxusercontent.com/u/72368739/blog/weightedglm/roc_10000_0.5.jpg)
+![](https://dl.dropboxusercontent.com/s/q7dacrq0f38283h/roc_10000_0.5.jpg)
 
 The conclusion is that, neither subsampling training data nor weighted logistic regression gives a better model than the naive method. The three methods differ only by how they select a cut-off to convert the fitted probability values to the positive / negative labels.
 

@@ -25,21 +25,21 @@ To analyze the linguistic complexity, I computed the following metrics for each 
 
 The first three metrics are naive. The constituency parse tree depth describes the syntactic complexity of a sentence. Constituency parse tree describes how different elements in a sentence are syntactically related to each other. Usually the depth of this tree is correlated with a sentence, but not necessarily. The deeper this tree is, the more nested syntactic components are there within the sentence. Take for example, a sample sentence from George Washington's address has the following parse tree:
 
-![](https://dl.dropboxusercontent.com/u/72368739/blog/inaugural/stgraph_washington.png)
+![](https://dl.dropboxusercontent.com/s/z6mz9ejwlw829kr/stgraph_washington.png)
 
 While a sample sentence from the new president's address has the following structure:
 
-![](https://dl.dropboxusercontent.com/u/72368739/blog/inaugural/stgraph_trump.png)
+![](https://dl.dropboxusercontent.com/s/4tmrt0639id5tic/stgraph_trump.png)
 
 Flesch-Kincaid Grade Level aggregates the length of sentences, length of words, and number of syllabus to describe the overall content difficulty of a text passage. The output number, K, means that the text is suitable for a common student in Grade K.
 
 I computed all scores by using python's NLTK, Stanford CoreNLP and textstat modules. I then produced figures to represent how each metric changed across the years. And here are the results:
 
-![](https://dl.dropboxusercontent.com/u/72368739/blog/inaugural/num_of_sentences.png)
-![](https://dl.dropboxusercontent.com/u/72368739/blog/inaugural/sentence_length.png)
-![](https://dl.dropboxusercontent.com/u/72368739/blog/inaugural/word_length.png)
-![](https://dl.dropboxusercontent.com/u/72368739/blog/inaugural/parse_tree_depth.png)
-![](https://dl.dropboxusercontent.com/u/72368739/blog/inaugural/flesch_kincaid.png)
+![](https://dl.dropboxusercontent.com/s/amq0a02ch5jtnov/num_of_sentences.png)
+![](https://dl.dropboxusercontent.com/s/7hvgjs1ojnqiejg/sentence_length.png)
+![](https://dl.dropboxusercontent.com/s/sq8uxbztm4rred1/word_length.png)
+![](https://dl.dropboxusercontent.com/s/psolkal8o1tu9qf/parse_tree_depth.png)
+![](https://dl.dropboxusercontent.com/s/vmopwl4t7a32n9d/flesch_kincaid.png)
 
 It is interesting that the number of sentences is the only metric that has almost no trend. The length of the address has changed a lot across the history. All other metrics suggest a trend of decay in the linguistic complexity. The new inaugural address sets a record on the simplicity in the syntactic structures, but its sentence shortness is beaten by Johnson, and its average word length is way above the record set by FDR's final term.
 
@@ -56,8 +56,8 @@ Both are quite common models used to compare text similarity. A tricky part is i
 
 For both models, I computed the cosine similarity between different inaugural addresses, and applied Local Linear Embedding to visualize. The results are the following:
 
-![](https://dl.dropboxusercontent.com/u/72368739/blog/inaugural/lda_embed.png)
-![](https://dl.dropboxusercontent.com/u/72368739/blog/inaugural/tfidf_embed.png)
+![](https://dl.dropboxusercontent.com/s/nx4aru0qm5hgq4b/lda_embed.png)
+![](https://dl.dropboxusercontent.com/s/ip0kwi17p4r13ee/tfidf_embed.png)
 
 LDA embedding seems not to distinguish a lot among different presidents, perhaps because inaugural speeches are all about the same topics. TF-IDF describes more granular information, by looking at the common words used by different presidents. While presidents in the same era tended to use the same language, different political parties also spoke quite similarly.
 

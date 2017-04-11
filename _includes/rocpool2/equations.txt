@@ -1,0 +1,26 @@
+
+Let TPR($p_1$,$p_2$) (FPR($p_1$,$p_2$)) be the bivariate function that maps the pair of probability thresholds under each model to TPR(FPR). These functions can be estimated by analyzing the tuning set. Consider a grid: $0\leq \alpha^{(1)}\leq \cdots \leq \alpha^{(m)}\leq 1$, $0\leq \beta^{(1)}, \cdots, \beta^{(n)}\leq 1$. A path on this grid connects a sequence of points
+
+$(p_1^{(1)},p_2^{(1)}),\cdots,(p_1^{(m+n+1)},p_2^{(m+n+1)})$ together, where $p_1^{(\cdot)}$ is a non-decreasing subsequence of $\{\alpha^{(\cdot)}\}$, and so is $p_2^{(\cdot)}$ for $\{\beta^{(\cdot)}\}$. We would like to choose the path to maximize the following equation:
+
+\[
+H=\sum_{i=1}^{m+n}\Delta FPR(p_1^{(i)},p_2^{(i)})\frac{TPR(p_1^{(i+1)},p_2^{(i+1)})+TPR(p_1^{(i)},p_2^{(i)})}{2}
+\]
+
+where
+
+\[
+\Delta FPR(p_1^{(i)},p_2^{(i)})=FPR(p_1^{(i)},p_2^{(i)})-FPR(p_1^{(i+1)},p_2^{(i+1)})
+\]
+
+
+H is an approximation for AUC from the Newton-Leibniz perspective. It can also be seen as the sum of the following distance between neighboring points on the path:
+
+\[
+d((p_1^{(i)},p_2^{(i)}), (p_1^{(i+1)},p_2^{(i+1)}))
+
+= 
+\Delta FPR(p_1^{(i)},p_2^{(i)})\frac{TPR(p_1^{(i+1)},p_2^{(i+1)})+TPR(p_1^{(i)},p_2^{(i)})}{2}
+\]
+
+Therefore, if we define such distances on all neighboring points on the grid, we can apply Dijkastra's Algorithm to maximize H.

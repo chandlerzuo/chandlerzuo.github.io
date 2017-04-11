@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+    <title>process_kelton_amazon</title>
+    <link rel="shortcut icon" type="image/x-icon" href="http://localhost:8192/static/base/images/favicon.ico?v=30780f272ab4aac64aa073a841546240">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="process_kelton_amazon_files/jquery-ui.css" type="text/css">
+    <link rel="stylesheet" href="process_kelton_amazon_files/jquery.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+
+
+<script type="text/javascript" src="process_kelton_amazon_files/MathJax.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+// MathJax disabled, set as null to distingish from *missing* MathJax,
+// where it will be undefined, and should prompt a dialog later.
+window.mathjax_url = "/static/components/MathJax/MathJax.js";
+</script>
+
+<link rel="stylesheet" href="process_kelton_amazon_files/bootstrap-tour.css" type="text/css">
+<link rel="stylesheet" href="process_kelton_amazon_files/codemirror.css">
+
+
+    <link rel="stylesheet" href="process_kelton_amazon_files/style.css" type="text/css">
+    
+
+<link rel="stylesheet" href="process_kelton_amazon_files/override.css" type="text/css">
+<link rel="stylesheet" href="" id="kernel-css" type="text/css">
+
+
+    <link rel="stylesheet" href="process_kelton_amazon_files/custom.css" type="text/css">
+    <script src="process_kelton_amazon_files/promise.js" type="text/javascript" charset="utf-8"></script>
+    <script src="process_kelton_amazon_files/require.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+      require.config({
+          
+          urlArgs: "v=20170322140018",
+          
+          baseUrl: '/static/',
+          paths: {
+            'auth/js/main': 'auth/js/main.min',
+            custom : '/custom',
+            nbextensions : '/nbextensions',
+            kernelspecs : '/kernelspecs',
+            underscore : 'components/underscore/underscore-min',
+            backbone : 'components/backbone/backbone-min',
+            jquery: 'components/jquery/jquery.min',
+            bootstrap: 'components/bootstrap/js/bootstrap.min',
+            bootstraptour: 'components/bootstrap-tour/build/js/bootstrap-tour.min',
+            'jquery-ui': 'components/jquery-ui/ui/minified/jquery-ui.min',
+            moment: 'components/moment/moment',
+            codemirror: 'components/codemirror',
+            termjs: 'components/term.js/src/term',
+            typeahead: 'components/jquery-typeahead/dist/jquery.typeahead'
+          },
+	  map: { // for backward compatibility
+	    "*": {
+		"jqueryui": "jquery-ui",
+	    }
+	  },
+          shim: {
+            typeahead: {
+              deps: ["jquery"],
+              exports: "typeahead"
+            },
+            underscore: {
+              exports: '_'
+            },
+            backbone: {
+              deps: ["underscore", "jquery"],
+              exports: "Backbone"
+            },
+            bootstrap: {
+              deps: ["jquery"],
+              exports: "bootstrap"
+            },
+            bootstraptour: {
+              deps: ["bootstrap"],
+              exports: "Tour"
+            },
+            "jquery-ui": {
+              deps: ["jquery"],
+              exports: "$"
+            }
+          },
+          waitSeconds: 30,
+      });
+
+      require.config({
+          map: {
+              '*':{
+                'contents': 'services/contents',
+              }
+          }
+      });
+
+      define("bootstrap", function () {
+          return window.$;
+      });
+
+      define("jquery", function () {
+          return window.$;
+      });
+
+      define("jqueryui", function () {
+          return window.$;
+      });
+
+      define("jquery-ui", function () {
+          return window.$;
+      });
+    </script>
+
+    
+    
+
+<script src="process_kelton_amazon_files/contents.js" data-requiremodule="services/contents" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/custom.js" data-requiremodule="custom/custom" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><script src="process_kelton_amazon_files/main.html" data-requiremodule="nbextensions/nb_anacondacloud/main" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/main_002.js" data-requiremodule="nbextensions/nb_conda/main" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/nbpresent_002.js" data-requiremodule="nbextensions/nbpresent/js/nbpresent.min" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><style type="text/css">.MathJax_Display {text-align: center; margin: 0; position: relative; display: block!important; text-indent: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; width: 100%}
+.MathJax .merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MathJax .MJX-monospace {font-family: monospace}
+.MathJax .MJX-sans-serif {font-family: sans-serif}
+#MathJax_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true'); padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.MathJax {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; padding: 0; margin: 0}
+.MathJax:focus, body :focus .MathJax {display: inline-table}
+.MathJax img, .MathJax nobr, .MathJax a {border: 0; padding: 0; margin: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+img.MathJax_strut {border: 0!important; padding: 0!important; margin: 0!important; vertical-align: 0!important}
+.MathJax span {display: inline; position: static; border: 0; padding: 0; margin: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+.MathJax nobr {white-space: nowrap!important}
+.MathJax img {display: inline!important; float: none!important}
+.MathJax * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none}
+.MathJax_Processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden}
+.MathJax_Processed {display: none!important}
+.MathJax_ExBox {display: block!important; overflow: hidden; width: 1px; height: 60ex; min-height: 0; max-height: none}
+.MathJax .MathJax_EmBox {display: block!important; overflow: hidden; width: 1px; height: 60em; min-height: 0; max-height: none}
+.MathJax .MathJax_HitBox {cursor: text; background: white; opacity: 0; filter: alpha(opacity=0)}
+.MathJax .MathJax_HitBox * {filter: none; opacity: 1; background: transparent}
+#MathJax_Tooltip * {filter: none; opacity: 1; background: transparent}
+@font-face {font-family: MathJax_Blank; src: url('about:blank')}
+.MathJax .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><script src="process_kelton_amazon_files/models.js" data-requiremodule="nbextensions/nb_conda/models" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/views.js" data-requiremodule="nbextensions/nb_conda/views" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><link href="process_kelton_amazon_files/nbpresent.css" rel="stylesheet" id="nbp-css"><script src="process_kelton_amazon_files/extension.js" data-requiremodule="nbextensions/widgets/notebook/js/extension" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/nbpresent.js" data-requiremodule="nbpresent-deps" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/common.js" data-requiremodule="nbextensions/nb_conda/common" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/init.js" data-requiremodule="nbextensions/widgets/widgets/js/init" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widgetarea.js" data-requiremodule="nbextensions/widgets/notebook/js/widgetarea" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><link href="process_kelton_amazon_files/conda.css" type="text/css" rel="stylesheet"><script src="process_kelton_amazon_files/nbpresent_003.js" data-requiremodule="nbpresent-notebook" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/manager.js" data-requiremodule="nbextensions/widgets/widgets/js/manager" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget.js" data-requiremodule="nbextensions/widgets/widgets/js/widget" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_link.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_link" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_bool.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_bool" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_button.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_button" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_box.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_box" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_float.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_float" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_image.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_image" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_int.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_int" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_color.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_color" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_output.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_output" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_selection.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_selection" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_selectioncontainer.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_selectioncontainer" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_string.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_string" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/widget_controller.js" data-requiremodule="nbextensions/widgets/widgets/js/widget_controller" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="process_kelton_amazon_files/backbone-min.js" data-requiremodule="backbone" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><link href="process_kelton_amazon_files/widgets.css" type="text/css" rel="stylesheet"></head>
+
+<body class="notebook_app  nbp-no-slides command_mode" data-base-url="/" data-ws-url="" data-notebook-name="process_kelton_amazon.ipynb" data-notebook-path="kelton_analysis/process_kelton_amazon.ipynb"><div style="visibility: hidden; overflow: hidden; position: absolute; top: 0px; height: 1px; width: auto; padding: 0px; border: 0px none; margin: 0px; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal;"><div id="MathJax_Hidden"></div></div><div style="display: none;" id="MathJax_Message"></div>
+
+<noscript>
+    <div id='noscript'>
+      Jupyter Notebook requires JavaScript.<br>
+      Please enable it to proceed.
+  </div>
+</noscript>
+
+<div style="display: block;" id="header">
+  <div id="header-container" class="container">
+  <div id="ipython_notebook" class="nav navbar-brand pull-left"><a href="http://localhost:8192/tree" title="dashboard"><img src="process_kelton_amazon_files/logo.png" alt="Jupyter Notebook"></a></div>
+
+  
+  
+  
+
+    <span id="login_widget">
+      
+    </span>
+
+  
+
+  
+
+  
+
+
+<span id="save_widget" class="pull-left save_widget">
+    <span id="notebook_name" class="filename">process_kelton_amazon</span>
+    <span title="Thu, Mar 23, 2017 10:12 PM" class="checkpoint_status">Last Checkpoint: a few seconds ago</span>
+    <span class="autosave_status">(autosaved)</span>
+</span>
+
+<span id="kernel_logo_widget">
+  
+  <img style="display: none;" class="current_kernel_logo" src="process_kelton_amazon_files/logo-64x64.html">
+  
+</span>
+
+
+  </div>
+  <div class="header-bar"></div>
+
+  
+<div id="menubar-container" class="container">
+<div id="menubar">
+    <div id="menus" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <button type="button" class="btn btn-default navbar-btn navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <i class="fa fa-bars"></i>
+              <span class="navbar-text">Menu</span>
+            </button>
+            <p id="kernel_indicator" class="navbar-text indicator_area">
+              <span class="kernel_indicator_name">Python [Root]</span>
+              <i title="Kernel Busy" class="kernel_busy_icon" id="kernel_indicator_icon"></i>
+            </p>
+            <i style="display: none;" id="readonly-indicator" class="navbar-text" title="This notebook is read-only">
+                <span class="fa-stack">
+                    <i class="fa fa-save fa-stack-1x"></i>
+                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                </span>
+            </i>
+            <i title="Command Mode" id="modal_indicator" class="navbar-text modal_indicator"></i>
+            <span id="notification_area"><div style="display: none;" class="notification_widget btn btn-xs navbar-btn undefined info" id="notification_kernel"><span></span></div><div style="display: none;" class="notification_widget btn btn-xs navbar-btn" id="notification_notebook"><span></span></div></span>
+            <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">File</a>
+                    <ul id="file_menu" class="dropdown-menu">
+                        <li id="new_notebook" class="dropdown-submenu">
+                            <a href="#">New Notebook</a>
+                            <ul class="dropdown-menu" id="menu-new-notebook-submenu"><li id="new-notebook-submenu-Python [Root]"><a href="#">Python [Root]</a></li></ul>
+                        </li>
+                        <li id="open_notebook" title="Opens a new window with the Dashboard view">
+                            <a href="#">Open...</a></li>
+                        <!-- <hr/> -->
+                        <li class="divider"></li>
+                        <li id="copy_notebook" title="Open a copy of this notebook's contents and start a new kernel">
+                            <a href="#">Make a Copy...</a></li>
+                        <li id="rename_notebook"><a href="#">Rename...</a></li>
+                        <li id="save_checkpoint"><a href="#">Save and Checkpoint</a></li>
+                        <!-- <hr/> -->
+                        <li class="divider"></li>
+                        <li id="restore_checkpoint" class="dropdown-submenu"><a href="#">Revert to Checkpoint</a>
+                          <ul class="dropdown-menu"><li><a href="#">Thursday, March 23, 2017 10:12 PM</a></li></ul>
+                        </li>
+                        <li class="divider"></li>
+                        <li id="print_preview"><a href="#">Print Preview</a></li>
+                        <li class="dropdown-submenu"><a href="#">Download as</a>
+                            <ul class="dropdown-menu">
+                                <li id="download_ipynb"><a href="#">Notebook (.ipynb)</a></li>
+                                <li id="download_script"><a href="#">Python (.py)</a></li>
+                                <li id="download_html"><a href="#">HTML (.html)</a></li>
+                                <li id="download_markdown"><a href="#">Markdown (.md)</a></li>
+                                <li id="download_rst"><a href="#">reST (.rst)</a></li>
+                                <li id="download_pdf"><a href="#">PDF via LaTeX (.pdf)</a></li>
+                            <li><a class="download_nbpresent">Presentation (.html)</a></li></ul>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="disabled" id="trust_notebook" title="Trust the output of this notebook">
+                            <a href="#">Trusted Notebook</a></li>
+                        <li class="divider"></li>
+                        <li id="kill_and_exit" title="Shutdown this notebook's kernel, and close this window">
+                            <a href="#">Close and Halt</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a aria-expanded="false" href="#" class="dropdown-toggle" data-toggle="dropdown">Edit</a>
+                    <ul id="edit_menu" class="dropdown-menu">
+                        <li id="cut_cell"><a href="#">Cut Cells</a></li>
+                        <li id="copy_cell"><a href="#">Copy Cells</a></li>
+                        <li id="paste_cell_above" class="disabled"><a href="#">Paste Cells Above</a></li>
+                        <li id="paste_cell_below" class="disabled"><a href="#">Paste Cells Below</a></li>
+                        <li id="paste_cell_replace" class="disabled"><a href="#">Paste Cells &amp; Replace</a></li>
+                        <li id="delete_cell"><a href="#">Delete Cells</a></li>
+                        <li id="undelete_cell" class="disabled"><a href="#">Undo Delete Cells</a></li>
+                        <li class="divider"></li>
+                        <li id="split_cell"><a href="#">Split Cell</a></li>
+                        <li id="merge_cell_above"><a href="#">Merge Cell Above</a></li>
+                        <li id="merge_cell_below"><a href="#">Merge Cell Below</a></li>
+                        <li class="divider"></li>
+                        <li id="move_cell_up"><a href="#">Move Cell Up</a></li>
+                        <li id="move_cell_down"><a href="#">Move Cell Down</a></li>
+                        <li class="divider"></li>
+                        <li id="edit_nb_metadata"><a href="#">Edit Notebook Metadata</a></li>
+                        <li class="divider"></li>
+                        <li id="find_and_replace"><a href="#"> Find and Replace </a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">View</a>
+                    <ul id="view_menu" class="dropdown-menu">
+                        <li id="toggle_header" title="Show/Hide the logo and notebook title (above menu bar)">
+                            <a href="#">Toggle Header</a></li>
+                        <li id="toggle_toolbar" title="Show/Hide the action icons (below menu bar)">
+                            <a href="#">Toggle Toolbar</a></li>
+                        <li id="menu-cell-toolbar" class="dropdown-submenu">
+                            <a href="#">Cell Toolbar</a>
+                            <ul class="dropdown-menu" id="menu-cell-toolbar-submenu"><li data-name="None"><a href="#">None</a></li><li data-name="Edit%20Metadata"><a href="#">Edit Metadata</a></li><li data-name="Raw%20Cell%20Format"><a href="#">Raw Cell Format</a></li><li data-name="Slideshow"><a href="#">Slideshow</a></li></ul>
+                        </li>
+                    <li><a>Toggle Presentation</a></li></ul>
+                </li>
+                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Insert</a>
+                    <ul id="insert_menu" class="dropdown-menu">
+                        <li id="insert_cell_above" title="Insert an empty Code cell above the currently active cell">
+                            <a href="#">Insert Cell Above</a></li>
+                        <li id="insert_cell_below" title="Insert an empty Code cell below the currently active cell">
+                            <a href="#">Insert Cell Below</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a aria-expanded="false" href="#" class="dropdown-toggle" data-toggle="dropdown">Cell</a>
+                    <ul id="cell_menu" class="dropdown-menu">
+                        <li id="run_cell" title="Run this cell, and move cursor to the next one">
+                            <a href="#">Run Cells</a></li>
+                        <li id="run_cell_select_below" title="Run this cell, select below">
+                            <a href="#">Run Cells and Select Below</a></li>
+                        <li id="run_cell_insert_below" title="Run this cell, insert below">
+                            <a href="#">Run Cells and Insert Below</a></li>
+                        <li id="run_all_cells" title="Run all cells in the notebook">
+                            <a href="#">Run All</a></li>
+                        <li id="run_all_cells_above" title="Run all cells above (but not including) this cell">
+                            <a href="#">Run All Above</a></li>
+                        <li id="run_all_cells_below" title="Run this cell and all cells below it">
+                            <a href="#">Run All Below</a></li>
+                        <li class="divider"></li>
+                        <li id="change_cell_type" class="dropdown-submenu" title="All cells in the notebook have a cell type. By default, new cells are created as 'Code' cells">
+                            <a href="#">Cell Type</a>
+                            <ul class="dropdown-menu">
+                              <li id="to_code" title="Contents will be sent to the kernel for execution, and output will display in the footer of cell">
+                                  <a href="#">Code</a></li>
+                              <li id="to_markdown" title="Contents will be rendered as HTML and serve as explanatory text">
+                                  <a href="#">Markdown</a></li>
+                              <li id="to_raw" title="Contents will pass through nbconvert unmodified">
+                                  <a href="#">Raw NBConvert</a></li>
+                            </ul>
+                        </li>
+                        <li class="divider"></li>
+                        <li id="current_outputs" class="dropdown-submenu"><a href="#">Current Outputs</a>
+                            <ul class="dropdown-menu">
+                                <li id="toggle_current_output" title="Hide/Show the output of the current cell">
+                                    <a href="#">Toggle</a>
+                                </li>
+                                <li id="toggle_current_output_scroll" title="Scroll the output of the current cell">
+                                    <a href="#">Toggle Scrolling</a>
+                                </li>
+                                <li id="clear_current_output" title="Clear the output of the current cell">
+                                    <a href="#">Clear</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="all_outputs" class="dropdown-submenu"><a href="#">All Output</a>
+                            <ul class="dropdown-menu">
+                                <li id="toggle_all_output" title="Hide/Show the output of all cells">
+                                    <a href="#">Toggle</a>
+                                </li>
+                                <li id="toggle_all_output_scroll" title="Scroll the output of all cells">
+                                    <a href="#">Toggle Scrolling</a>
+                                </li>
+                                <li id="clear_all_output" title="Clear the output of all cells">
+                                    <a href="#">Clear</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Kernel</a>
+                    <ul id="kernel_menu" class="dropdown-menu">
+                        <li id="int_kernel" title="Send KeyboardInterrupt (CTRL-C) to the Kernel">
+                            <a href="#">Interrupt</a>
+                        </li>
+                        <li id="restart_kernel" title="Restart the Kernel">
+                            <a href="#">Restart</a>
+                        </li>
+                        <li id="restart_clear_output" title="Restart the Kernel and clear all output">
+                            <a href="#">Restart &amp; Clear Output</a>
+                        </li>
+                        <li id="restart_run_all" title="Restart the Kernel and re-run the notebook">
+                            <a href="#">Restart &amp; Run All</a>
+                        </li>
+                        <li id="reconnect_kernel" title="Reconnect to the Kernel">
+                            <a href="#">Reconnect</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li id="menu-change-kernel" class="dropdown-submenu">
+                            <a href="#">Change kernel</a>
+                            <ul class="dropdown-menu" id="menu-change-kernel-submenu"><li id="kernel-submenu-Python [Root]"><a href="#">Python [Root]</a></li></ul>
+                        </li>
+                    <li class="divider"></li>
+<li id="conda_menu_item"><a href="#">Conda Packages</a></li>
+<li><a id="conda_server_link" href="http://anaconda.org/" target="_blank">Visit <span id="conda_server_name">anaconda.org</span></a></li></ul>
+                </li>
+                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help</a>
+                    <ul id="help_menu" class="dropdown-menu">
+                        
+                        <li id="notebook_tour" title="A quick tour of the notebook user interface"><a href="#">User Interface Tour</a></li>
+                        <li id="keyboard_shortcuts" title="Opens a tooltip with all keyboard shortcuts"><a href="#">Keyboard Shortcuts</a></li>
+                        <li class="divider"></li>
+                        
+
+                        
+                            
+                                <li><a rel="noreferrer" href="http://nbviewer.ipython.org/github/ipython/ipython/blob/3.x/examples/Notebook/Index.ipynb" target="_blank" title="Opens in a new window">
+                                
+                                    <i class="fa fa-external-link menu-icon pull-right"></i>
+                                
+
+                                Notebook Help
+                                </a></li>
+                            
+                                <li><a rel="noreferrer" href="https://help.github.com/articles/markdown-basics/" target="_blank" title="Opens in a new window">
+                                
+                                    <i class="fa fa-external-link menu-icon pull-right"></i>
+                                
+
+                                Markdown
+                                </a></li>
+                            
+                            
+                        
+                        <li class="divider" id="kernel-help-links"></li><li><a href="http://docs.python.org/2.7?v=20170322140018" title="Opens in a new window" target="_blank"><i class="fa fa-external-link menu-icon pull-right"></i><span>Python</span></a></li><li><a href="http://ipython.org/documentation.html?v=20170322140018" title="Opens in a new window" target="_blank"><i class="fa fa-external-link menu-icon pull-right"></i><span>IPython</span></a></li><li><a href="http://docs.scipy.org/doc/numpy/reference/?v=20170322140018" title="Opens in a new window" target="_blank"><i class="fa fa-external-link menu-icon pull-right"></i><span>NumPy</span></a></li><li><a href="http://docs.scipy.org/doc/scipy/reference/?v=20170322140018" title="Opens in a new window" target="_blank"><i class="fa fa-external-link menu-icon pull-right"></i><span>SciPy</span></a></li><li><a href="http://matplotlib.org/contents.html?v=20170322140018" title="Opens in a new window" target="_blank"><i class="fa fa-external-link menu-icon pull-right"></i><span>Matplotlib</span></a></li><li><a href="http://docs.sympy.org/latest/index.html?v=20170322140018" title="Opens in a new window" target="_blank"><i class="fa fa-external-link menu-icon pull-right"></i><span>SymPy</span></a></li><li><a href="http://pandas.pydata.org/pandas-docs/stable/?v=20170322140018" title="Opens in a new window" target="_blank"><i class="fa fa-external-link menu-icon pull-right"></i><span>pandas</span></a></li><li class="divider"></li>
+                        <li title="About Jupyter Notebook"><a id="notebook_about" href="#">About</a></li>
+                        
+                    </ul>
+                </li>
+              </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="maintoolbar" class="navbar">
+  <div class="toolbar-inner navbar-inner navbar-nobg">
+    <div id="maintoolbar-container" class="container toolbar"><div id="save-notbook" class="btn-group"><button data-jupyter-action="jupyter-notebook:save-notebook" title="Save and Checkpoint" class="btn btn-default"><i class="fa-save fa"></i></button></div><div id="insert_above_below" class="btn-group"><button data-jupyter-action="jupyter-notebook:insert-cell-below" title="insert cell below" class="btn btn-default"><i class="fa-plus fa"></i></button></div><div id="cut_copy_paste" class="btn-group"><button data-jupyter-action="jupyter-notebook:cut-cell" title="cut selected cells" class="btn btn-default"><i class="fa-cut fa"></i></button><button data-jupyter-action="jupyter-notebook:copy-cell" title="copy selected cells" class="btn btn-default"><i class="fa-copy fa"></i></button><button data-jupyter-action="jupyter-notebook:paste-cell-below" title="paste cells below" class="btn btn-default"><i class="fa-paste fa"></i></button></div><div id="move_up_down" class="btn-group"><button data-jupyter-action="jupyter-notebook:move-cell-up" title="move selected cells up" class="btn btn-default"><i class="fa-arrow-up fa"></i></button><button data-jupyter-action="jupyter-notebook:move-cell-down" title="move selected cells down" class="btn btn-default"><i class="fa-arrow-down fa"></i></button></div><div id="run_int" class="btn-group"><button data-jupyter-action="jupyter-notebook:run-cell-and-select-next" title="run cell, select below" class="btn btn-default"><i class="fa-step-forward fa"></i></button><button data-jupyter-action="jupyter-notebook:interrupt-kernel" title="interrupt kernel" class="btn btn-default"><i class="fa-stop fa"></i></button><button data-jupyter-action="jupyter-notebook:confirm-restart-kernel" title="restart the kernel (with dialog)" class="btn btn-default"><i class="fa-repeat fa"></i></button></div><select class="form-control select-xs" id="cell_type"><option selected="selected" value="code">Code</option><option value="markdown">Markdown</option><option value="raw">Raw NBConvert</option><option value="heading">Heading</option><option style="display: none;" disabled="disabled" value="multiselect">-</option></select><div class="btn-group"><button data-jupyter-action="jupyter-notebook:show-command-palette" title="open the command palette" class="btn btn-default"><i class="fa-keyboard-o fa"></i></button></div><div class="btn-group"><button class="btn btn-default" title="show new celltoolbar selector location">CellToolbar</button></div><div class="btn-group"><button id="nbp-app-btn" title="Edit Presentation" class="btn btn-default"><i class="fa-gift fa"></i></button><button id="nbp-present-btn" title="Show Presentation" class="btn btn-default"><i class="fa-youtube-play fa"></i></button></div></div>
+  </div>
+</div>
+</div>
+
+<div class="lower-header-bar"></div>
+
+</div>
+
+<div style="height: 414px; display: block;" id="site">
+
+
+<div id="ipython-main-app">
+    <div id="notebook_panel">
+        <div tabindex="-1" id="notebook"><div id="notebook-container" class="container"><div tabindex="2" class="cell code_cell rendered running selected"><div class="input"><div class="prompt input_prompt">In&nbsp;[*]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 3252.6px; left: 5.59999px;"><textarea tabindex="0" spellcheck="false" autocapitalize="off" autocorrect="off" style="position: absolute; padding: 0px; width: 1px; height: 1em; outline: medium none;" wrap="off"></textarea></div><div style="bottom: 15px;" cm-not-content="true" class="CodeMirror-vscrollbar"><div style="min-width: 1px; height: 0px;"></div></div><div style="display: block; right: 0px; left: 0px;" cm-not-content="true" class="CodeMirror-hscrollbar"><div style="height: 100%; min-height: 1px; width: 2103px;"></div></div><div style="height: 15px; width: 15px;" cm-not-content="true" class="CodeMirror-scrollbar-filler"></div><div cm-not-content="true" class="CodeMirror-gutter-filler"></div><div draggable="true" tabindex="-1" class="CodeMirror-scroll"><div style="margin-left: 0px; min-width: 2103px; margin-bottom: -15px; border-right-width: 15px; min-height: 3377px; padding-right: 0px; padding-bottom: 15px;" class="CodeMirror-sizer"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: medium none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div style="" class="CodeMirror-cursors"><div style="left: 0px; top: 3247px; height: 17px;" class="CodeMirror-cursor">&nbsp;</div></div><div style="" class="CodeMirror-code"><pre class=" CodeMirror-line "><span><span class="cm-keyword">import</span> <span class="cm-variable">os</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-keyword">import</span> <span class="cm-variable">numpy</span> <span class="cm-keyword">as</span> <span class="cm-variable">np</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-keyword">import</span> <span class="cm-variable">pandas</span> <span class="cm-keyword">as</span> <span class="cm-variable">pd</span></span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-variable">debug</span> = <span class="cm-builtin">False</span></span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-variable">data_dir</span> = <span class="cm-string">'/home/ec2-user/data/amazon_mapping'</span></span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-variable">file_amazon_retail_segment</span> = <span class="cm-string">'{}/amzn_retail_segment.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>)</span></pre><pre class=" CodeMirror-line "><span><span class="cm-variable">file_amazon_subscription</span> = <span class="cm-string">'{}/czuo_amazon_subscription.txt'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>)</span></pre><pre class=" CodeMirror-line "><span><span class="cm-variable">file_amazon_zipcode_info</span> = <span class="cm-string">'{}/czuo_amazon_zipcode_info.txt'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>)</span></pre><pre class=" CodeMirror-line "><span><span class="cm-variable">file_amazon_customers</span> = <span class="cm-string">'{}/czuo_amazon_customers.txt'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-variable">file_amazon_feature_merged</span> = <span class="cm-string">'{}/output/czuo_amazon_features.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>)</span></pre><pre class=" CodeMirror-line "><span><span class="cm-variable">file_amazon_kelton_merged</span> = <span class="cm-string">'{}/output/kelton/merged_amazon_kelton.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>)</span></pre><pre class=" CodeMirror-line "><span><span class="cm-variable">file_amazon_audible_merged</span> = <span class="cm-string">'{}/output/audible/merged_amazon_audible.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-keyword">def</span> <span class="cm-def">merge_retail_segment_files</span>():</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbls</span> = []</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">for</span> <span class="cm-variable">tag</span> <span class="cm-keyword">in</span> [<span class="cm-string">'TR'</span>, <span class="cm-string">'RS'</span>, <span class="cm-string">'MB'</span>, <span class="cm-string">'TP'</span>, <span class="cm-string">'UD'</span>, <span class="cm-string">'DB'</span>, <span class="cm-string">'CD'</span>]:</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-string">'{}/Bullseye{}_20160930.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">tag</span>), <span class="cm-variable">header</span> = <span class="cm-builtin">None</span>)</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl</span>.<span class="cm-variable">columns</span> = [<span class="cm-string">'CUSTOMER_ID'</span>]</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl</span>.<span class="cm-variable">loc</span>[:, <span class="cm-string">'CUSTOMER_ID'</span>] = <span class="cm-variable">pd</span>.<span class="cm-variable">to_numeric</span>(<span class="cm-variable">tbl</span>.<span class="cm-variable">CUSTOMER_ID</span>, <span class="cm-variable">errors</span> = <span class="cm-string">'coerce'</span>)</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl</span>.<span class="cm-variable">dropna</span>(<span class="cm-variable">inplace</span> = <span class="cm-builtin">True</span>)</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl</span>.<span class="cm-variable">loc</span>[:, <span class="cm-string">'SEGMENT'</span>] = <span class="cm-variable">tag</span></span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbls</span>.<span class="cm-variable">append</span>(<span class="cm-variable">tbl</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">final_tbl</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">concat</span>(<span class="cm-variable">tbls</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">final_tbl</span>.<span class="cm-variable">loc</span>[:, <span class="cm-string">'CUSTOMER_ID'</span>] = <span class="cm-variable">final_tbl</span>.<span class="cm-variable">CUSTOMER_ID</span>.<span class="cm-variable">astype</span>(<span class="cm-builtin">long</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">final_tbl</span>.<span class="cm-variable">to_csv</span>(<span class="cm-variable">file_amazon_retail_segment</span>, <span class="cm-variable">index</span> = <span class="cm-builtin">False</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-keyword">def</span> <span class="cm-def">merge_kelton_amazon</span>():</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_amazon</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_feature_merged</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_kelton_segments</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-string">'/local/data/chandlez/segmentation/kelton/data/kelton_custid_segment.csv'</span>, <span class="cm-variable">header</span> = <span class="cm-builtin">None</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_kelton_segments</span>.<span class="cm-variable">columns</span> = [<span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-string">'COUNTRY'</span>, <span class="cm-string">'STATE'</span>, <span class="cm-string">'KELTON_SEGMENT'</span>]</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_kelton_segments</span>.<span class="cm-variable">loc</span>[:, <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>] = <span class="cm-variable">tbl_kelton_segments</span>.<span class="cm-variable">CURRENT_CUSTOMER_ID</span>.<span class="cm-variable">astype</span>(<span class="cm-builtin">long</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">merge</span>(<span class="cm-variable">tbl_amazon</span>, <span class="cm-variable">tbl_kelton_segments</span>,</span></pre><pre class=" CodeMirror-line "><span>                          <span class="cm-variable">left_on</span> = <span class="cm-string">'CUSTOMER_ID'</span>,</span></pre><pre class=" CodeMirror-line "><span>                          <span class="cm-variable">right_on</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">how</span> = <span class="cm-string">'right'</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">print</span> <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">shape</span>[<span class="cm-number">0</span>], <span class="cm-string">' of '</span>, <span class="cm-variable">tbl_kelton_segments</span>.<span class="cm-variable">shape</span>[<span class="cm-number">0</span>], <span class="cm-string">' Kelton sample can be identified in retail segments.'</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">to_csv</span>(<span class="cm-variable">file_amazon_kelton_merged</span>, <span class="cm-variable">index</span> = <span class="cm-builtin">False</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-keyword">def</span> <span class="cm-def">merge_audseg_amazon</span>():</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_amazon</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_feature_merged</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_audible_segments</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-string">'~/data/segmentation/customer-model-score-segmentation-score-91470-2017-02-26.tsv'</span>, <span class="cm-variable">sep</span> = <span class="cm-string">'\t'</span>, <span class="cm-variable">header</span> = <span class="cm-builtin">None</span>, <span class="cm-variable">usecols</span> = [<span class="cm-number">4</span>, <span class="cm-number">10</span>])</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_audible_segments</span>.<span class="cm-variable">columns</span> = [<span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-string">'AUDIBLE_SEGMENT'</span>]</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_audible_segments</span>.<span class="cm-variable">loc</span>[:, <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>] = <span class="cm-variable">tbl_audible_segments</span>.<span class="cm-variable">CURRENT_CUSTOMER_ID</span>.<span class="cm-variable">astype</span>(<span class="cm-builtin">long</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">merge</span>(<span class="cm-variable">tbl_amazon</span>, <span class="cm-variable">tbl_audible_segments</span>,</span></pre><pre class=" CodeMirror-line "><span>                          <span class="cm-variable">left_on</span> = <span class="cm-string">'CUSTOMER_ID'</span>,</span></pre><pre class=" CodeMirror-line "><span>                          <span class="cm-variable">right_on</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">how</span> = <span class="cm-string">'right'</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">print</span> <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">shape</span>[<span class="cm-number">0</span>], <span class="cm-string">' of '</span>, <span class="cm-variable">tbl_audible_segments</span>.<span class="cm-variable">shape</span>[<span class="cm-number">0</span>], <span class="cm-string">' Audible members can be identified in retail segments.'</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">to_csv</span>(<span class="cm-variable">file_amazon_audible_merged</span>, <span class="cm-variable">index</span> = <span class="cm-builtin">False</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-keyword">def</span> <span class="cm-def">merge_amazon_features</span>():</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_amazon_customers</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_customers</span>, <span class="cm-variable">sep</span> = <span class="cm-string">'\t'</span>,</span></pre><pre class=" CodeMirror-line "><span>                                       <span class="cm-variable">dtype</span> = {<span class="cm-string">'CUSTOMER_ID'</span>: <span class="cm-builtin">long</span>, <span class="cm-string">'BILLING_ADDRESS'</span>: <span class="cm-builtin">float</span>},</span></pre><pre class=" CodeMirror-line "><span>                                       <span class="cm-variable">usecols</span> = [<span class="cm-string">'CUSTOMER_ID'</span>, <span class="cm-string">'BILLING_ADDRESS'</span>],</span></pre><pre class=" CodeMirror-line "><span>                                       <span class="cm-variable">error_bad_lines</span> = <span class="cm-builtin">False</span>,</span></pre><pre class=" CodeMirror-line "><span>                                       <span class="cm-variable">nrows</span> = <span class="cm-number">1000</span> <span class="cm-keyword">if</span> <span class="cm-variable">debug</span> <span class="cm-keyword">else</span> <span class="cm-builtin">None</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">print</span> <span class="cm-string">'Read customer data.'</span>, <span class="cm-variable">tbl_amazon_customers</span>.<span class="cm-variable">shape</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_amazon_zipcode_info</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_zipcode_info</span>, <span class="cm-variable">sep</span> = <span class="cm-string">'\t'</span>,</span></pre><pre class=" CodeMirror-line "><span>                                          <span class="cm-variable">dtype</span> = {<span class="cm-string">'ADDRESS_ID'</span>: <span class="cm-builtin">float</span>,</span></pre><pre class=" CodeMirror-line "><span>                                                   <span class="cm-string">'DENSITY_BRACKET'</span>: <span class="cm-builtin">float</span>,</span></pre><pre class=" CodeMirror-line "><span>                                                   <span class="cm-string">'INCOME_BRACKET'</span>: <span class="cm-builtin">float</span></span></pre><pre class=" CodeMirror-line "><span>                                                   },</span></pre><pre class=" CodeMirror-line "><span>                                                   <span class="cm-variable">usecols</span> = [<span class="cm-string">'DENSITY_BRACKET'</span>, <span class="cm-string">'INCOME_BRACKET'</span>, <span class="cm-string">'ADDRESS_ID'</span>],</span></pre><pre class=" CodeMirror-line "><span>                                                   <span class="cm-variable">error_bad_lines</span> = <span class="cm-builtin">False</span>,</span></pre><pre class=" CodeMirror-line "><span>                                       <span class="cm-variable">nrows</span> = <span class="cm-number">1000</span> <span class="cm-keyword">if</span> <span class="cm-variable">debug</span> <span class="cm-keyword">else</span> <span class="cm-builtin">None</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">print</span> <span class="cm-string">'Read zipcode data, '</span>, <span class="cm-variable">tbl_amazon_zipcode_info</span>.<span class="cm-variable">shape</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_amazon_subscription</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_subscription</span>, <span class="cm-variable">sep</span> = <span class="cm-string">'\t'</span>,</span></pre><pre class=" CodeMirror-line "><span>                                          <span class="cm-variable">usecols</span> = [<span class="cm-string">'CUSTOMER_ID'</span>, <span class="cm-string">'SUBSCRIPTION_PLAN_GROUP_ID'</span>],</span></pre><pre class=" CodeMirror-line "><span>                                          <span class="cm-variable">dtype</span> = {<span class="cm-string">'CUSTOMER_ID'</span>: <span class="cm-builtin">long</span>, <span class="cm-string">'SUBSCRIPTION_PLAN_GROUP_ID'</span>: <span class="cm-builtin">str</span>},</span></pre><pre class=" CodeMirror-line "><span>                                          <span class="cm-variable">error_bad_lines</span> = <span class="cm-builtin">False</span>,</span></pre><pre class=" CodeMirror-line "><span>                                       <span class="cm-variable">nrows</span> = <span class="cm-number">1000</span> <span class="cm-keyword">if</span> <span class="cm-variable">debug</span> <span class="cm-keyword">else</span> <span class="cm-builtin">None</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">print</span> <span class="cm-string">'Read subscription data, '</span>, <span class="cm-variable">tbl_amazon_subscription</span>.<span class="cm-variable">shape</span></span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">print</span> <span class="cm-string">'Plan distribution: \n'</span>, <span class="cm-variable">tbl_amazon_subscription</span>.<span class="cm-variable">SUBSCRIPTION_PLAN_GROUP_ID</span>.<span class="cm-variable">value_counts</span>()</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_amazon_retail_segment</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_retail_segment</span>,</span></pre><pre class=" CodeMirror-line "><span>                                            <span class="cm-variable">nrows</span> = <span class="cm-number">1000</span> <span class="cm-keyword">if</span> <span class="cm-variable">debug</span> <span class="cm-keyword">else</span> <span class="cm-builtin">None</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">merge</span>(<span class="cm-variable">tbl_amazon_customers</span>, <span class="cm-variable">tbl_amazon_zipcode_info</span>, <span class="cm-variable">how</span> = <span class="cm-string">'left'</span>, <span class="cm-variable">left_on</span> = <span class="cm-string">'BILLING_ADDRESS'</span>, <span class="cm-variable">right_on</span> = <span class="cm-string">'ADDRESS_ID'</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">merge</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">tbl_amazon_subscription</span>, <span class="cm-variable">how</span> = <span class="cm-string">'left'</span>, <span class="cm-variable">on</span> = <span class="cm-string">'CUSTOMER_ID'</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">merge</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">tbl_amazon_retail_segment</span>, <span class="cm-variable">on</span> = <span class="cm-string">'CUSTOMER_ID'</span>, <span class="cm-variable">how</span> = <span class="cm-string">'left'</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">to_csv</span>(<span class="cm-variable">file_amazon_feature_merged</span>, <span class="cm-variable">index</span> = <span class="cm-builtin">False</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-keyword">def</span> <span class="cm-def">map_amazon</span>(<span class="cm-variable">target</span> = <span class="cm-string">'kelton'</span>):</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">if</span> <span class="cm-keyword">not</span> <span class="cm-variable">os</span>.<span class="cm-variable">path</span>.<span class="cm-variable">isfile</span>(<span class="cm-variable">file_amazon_retail_segment</span>):</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">merge_retail_segment_files</span>()</span></pre><pre class=" CodeMirror-line "><span>        </span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">if</span> <span class="cm-keyword">not</span> <span class="cm-variable">os</span>.<span class="cm-variable">path</span>.<span class="cm-variable">isfile</span>(<span class="cm-variable">file_amazon_feature_merged</span>):</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">merge_amazon_features</span>()</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">if</span> <span class="cm-variable">target</span> <span class="cm-operator">==</span> <span class="cm-string">'kelton'</span>:</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-keyword">if</span> <span class="cm-keyword">not</span> <span class="cm-variable">os</span>.<span class="cm-variable">path</span>.<span class="cm-variable">isfile</span>(<span class="cm-variable">file_amazon_kelton_merged</span>):</span></pre><pre class=" CodeMirror-line "><span>            <span class="cm-variable">merge_kelton_amazon</span>()</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">else</span>:</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-keyword">if</span> <span class="cm-keyword">not</span> <span class="cm-variable">os</span>.<span class="cm-variable">path</span>.<span class="cm-variable">isfile</span>(<span class="cm-variable">file_amazon_audible_merged</span>):</span></pre><pre class=" CodeMirror-line "><span>            <span class="cm-variable">merge_audseg_amazon</span>()</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_audible_merged</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">print</span> <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">columns</span>.<span class="cm-variable">tolist</span>()</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">fillna</span>(<span class="cm-number">0</span>, <span class="cm-variable">inplace</span> = <span class="cm-builtin">True</span>)</span></pre><pre class=" CodeMirror-line "><span>    </span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">if</span> <span class="cm-variable">target</span> <span class="cm-operator">==</span> <span class="cm-string">'kelton'</span>:</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">col</span> = <span class="cm-variable">col</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">else</span>:</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">col</span> = <span class="cm-string">'AUDIBLE_SEGMENT'</span></span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">index</span> = <span class="cm-string">'SEGMENT'</span>, <span class="cm-variable">columns</span> = <span class="cm-variable">col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_retailsegment.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">index</span> = <span class="cm-string">'SUBSCRIPTION_PLAN_GROUP_ID'</span>, <span class="cm-variable">columns</span> = <span class="cm-variable">col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_subscription.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">index</span> = <span class="cm-string">'INCOME_BRACKET'</span>, <span class="cm-variable">columns</span> = <span class="cm-variable">col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_income.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">index</span> = <span class="cm-string">'DENSITY_BRACKET'</span>, <span class="cm-variable">columns</span> = <span class="cm-variable">col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_density.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">index</span> = [<span class="cm-string">'INCOME_BRACKET'</span>, <span class="cm-string">'DENSITY_BRACKET'</span>], <span class="cm-variable">columns</span> = <span class="cm-variable">col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_income_density.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">index</span> = [<span class="cm-string">'SEGMENT'</span>, <span class="cm-string">'DENSITY_BRACKET'</span>], <span class="cm-variable">columns</span> = <span class="cm-variable">col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_segment_density.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">index</span> = [<span class="cm-string">'SEGMENT'</span>, <span class="cm-string">'INCOME_BRACKET'</span>], <span class="cm-variable">columns</span> = <span class="cm-variable">col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_segment_income.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">index</span> = [<span class="cm-string">'SEGMENT'</span>, <span class="cm-string">'SUBSCRIPTION_PLAN_GROUP_ID'</span>], <span class="cm-variable">columns</span> = <span class="cm-variable">col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_segment_subscription.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">index</span> = [<span class="cm-string">'SUBSCRIPTION_PLAN_GROUP_ID'</span>, <span class="cm-string">'DENSITY_BRACKET'</span>], <span class="cm-variable">columns</span> = <span class="cm-variable">col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_subscription_density.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">index</span> = [<span class="cm-string">'SUBSCRIPTION_PLAN_GROUP_ID'</span>, <span class="cm-string">'INCOME_BRACKET'</span>], <span class="cm-variable">columns</span> = <span class="cm-variable">col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_subscription_income.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-keyword">def</span> <span class="cm-def">apply_mapping_logic</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">output_data_dir</span>):</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">fillna</span>(<span class="cm-string">'0'</span>, <span class="cm-variable">inplace</span> = <span class="cm-builtin">True</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span>[<span class="cm-string">'INCOME_BRACKET'</span>] = <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">INCOME_BRACKET</span>.<span class="cm-variable">astype</span>(<span class="cm-builtin">int</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span>[<span class="cm-string">'DENSITY_BRACKET'</span>] = <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">DENSITY_BRACKET</span>.<span class="cm-variable">astype</span>(<span class="cm-builtin">int</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span>[<span class="cm-string">'PREDICTED_SEGMENT'</span>] = <span class="cm-variable">np</span>.<span class="cm-variable">nan</span></span></pre><pre class=" CodeMirror-line "><span>    </span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">for</span> <span class="cm-variable">logic_name</span> <span class="cm-keyword">in</span> [<span class="cm-string">'segment_subscription'</span>, <span class="cm-string">'segment_income'</span>, <span class="cm-string">'segment_density'</span>, <span class="cm-string">'subscription'</span>, <span class="cm-string">'income_density'</span>, <span class="cm-string">'income'</span>, <span class="cm-string">'density'</span>]:</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl_logic</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-string">'{}/mapping_logic/mapping_{}.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">output_data_dir</span>, <span class="cm-variable">logic_name</span>),</span></pre><pre class=" CodeMirror-line "><span>                               <span class="cm-variable">dtype</span> = {<span class="cm-string">'SEGMENT'</span>: <span class="cm-builtin">str</span>, <span class="cm-string">'SUBSCRIPTION_PLAN_GROUP_ID'</span>: <span class="cm-builtin">str</span>,</span></pre><pre class=" CodeMirror-line "><span>                                        <span class="cm-string">'INCOME_BRACKET'</span>: <span class="cm-builtin">int</span>, <span class="cm-string">'DENSITY_BRACKET'</span>: <span class="cm-builtin">int</span>})</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl_logic</span>.<span class="cm-variable">columns</span> = <span class="cm-variable">tbl_logic</span>.<span class="cm-variable">columns</span>.<span class="cm-variable">tolist</span>()[:(<span class="cm-variable">tbl_logic</span>.<span class="cm-variable">shape</span>[<span class="cm-number">1</span>] <span class="cm-operator">-</span> <span class="cm-number">1</span>)] <span class="cm-operator">+</span> [<span class="cm-string">'PREDICT'</span>]</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">join_keys</span> = <span class="cm-builtin">list</span>(<span class="cm-builtin">set</span>([<span class="cm-string">'SEGMENT'</span>, <span class="cm-string">'SUBSCRIPTION_PLAN_GROUP_ID'</span>, <span class="cm-string">'INCOME_BRACKET'</span>, <span class="cm-string">'DENSITY_BRACKET'</span>]).<span class="cm-variable">intersection</span>(<span class="cm-variable">tbl_logic</span>.<span class="cm-variable">columns</span>.<span class="cm-variable">tolist</span>()))</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-keyword">print</span> <span class="cm-string">'Processing '</span>, <span class="cm-variable">logic_name</span>, <span class="cm-string">' join keys '</span>, <span class="cm-variable">join_keys</span></span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl_logic</span> = <span class="cm-variable">tbl_logic</span>.<span class="cm-variable">iloc</span>[<span class="cm-number">1</span>:, :] <span class="cm-comment">## remove the first one</span></span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-keyword">if</span> <span class="cm-string">'TOTAL'</span> <span class="cm-keyword">in</span> <span class="cm-variable">tbl_logic</span>.<span class="cm-variable">columns</span>.<span class="cm-variable">tolist</span>():</span></pre><pre class=" CodeMirror-line "><span>            <span class="cm-variable">tbl_logic</span>.<span class="cm-variable">rename</span>(<span class="cm-variable">columns</span> = {<span class="cm-string">'TOTAL'</span>:<span class="cm-string">'SIZE'</span>}, <span class="cm-variable">inplace</span> = <span class="cm-builtin">True</span>)</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl_logic</span> = <span class="cm-variable">tbl_logic</span>.<span class="cm-variable">loc</span>[<span class="cm-variable">tbl_logic</span>.<span class="cm-variable">SIZE</span> <span class="cm-operator">&gt;=</span> <span class="cm-number">10</span>, <span class="cm-variable">join_keys</span> <span class="cm-operator">+</span> [<span class="cm-string">'PREDICT'</span>]]</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-keyword">print</span> <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">columns</span>.<span class="cm-variable">tolist</span>()</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-keyword">print</span> <span class="cm-variable">tbl_logic</span>.<span class="cm-variable">columns</span>.<span class="cm-variable">tolist</span>()</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-keyword">print</span> <span class="cm-variable">join_keys</span></span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl_merged</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">merge</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">tbl_logic</span>, <span class="cm-variable">how</span> = <span class="cm-string">'left'</span>, <span class="cm-variable">on</span> = <span class="cm-variable">join_keys</span>)</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">loc</span>[<span class="cm-variable">tbl_merged</span>.<span class="cm-variable">PREDICTED_SEGMENT</span>.<span class="cm-variable">isnull</span>(), <span class="cm-string">'PREDICTED_SEGMENT'</span>] = <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">loc</span>[<span class="cm-variable">tbl_merged</span>.<span class="cm-variable">PREDICTED_SEGMENT</span>.<span class="cm-variable">isnull</span>(), <span class="cm-string">'PREDICT'</span>]</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">drop</span>([<span class="cm-string">'PREDICT'</span>], <span class="cm-variable">axis</span> = <span class="cm-number">1</span>, <span class="cm-variable">inplace</span> = <span class="cm-builtin">True</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_merged</span>.<span class="cm-variable">loc</span>[<span class="cm-variable">tbl_merged</span>.<span class="cm-variable">PREDICTED_SEGMENT</span>.<span class="cm-variable">isnull</span>(), <span class="cm-string">'PREDICTED_SEGMENT'</span>] = <span class="cm-string">'New Friend'</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">return</span> <span class="cm-variable">tbl_merged</span></span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span><span class="cm-keyword">def</span> <span class="cm-def">predict_amazon</span>(<span class="cm-variable">target</span>):</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">if</span> <span class="cm-keyword">not</span> <span class="cm-variable">os</span>.<span class="cm-variable">path</span>.<span class="cm-variable">isfile</span>(<span class="cm-variable">file_amazon_retail_segment</span>):</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">merge_retail_segment_files</span>()</span></pre><pre class=" CodeMirror-line "><span>        </span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">if</span> <span class="cm-keyword">not</span> <span class="cm-variable">os</span>.<span class="cm-variable">path</span>.<span class="cm-variable">isfile</span>(<span class="cm-variable">file_amazon_feature_merged</span>):</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">merge_amazon_features</span>()</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">if</span> <span class="cm-variable">target</span> <span class="cm-operator">==</span> <span class="cm-string">'audible'</span>:</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-keyword">if</span> <span class="cm-keyword">not</span> <span class="cm-variable">os</span>.<span class="cm-variable">path</span>.<span class="cm-variable">isfile</span>(<span class="cm-variable">file_amazon_audible_merged</span>):</span></pre><pre class=" CodeMirror-line "><span>            <span class="cm-variable">merge_audseg_amazon</span>()</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl_merged</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_audible_merged</span>)</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">segment_col</span> = <span class="cm-string">'AUDIBLE_SEGMENT'</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">elif</span> <span class="cm-variable">target</span> <span class="cm-operator">==</span> <span class="cm-string">'kelton'</span>:</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-keyword">if</span> <span class="cm-keyword">not</span> <span class="cm-variable">os</span>.<span class="cm-variable">path</span>.<span class="cm-variable">isfile</span>(<span class="cm-variable">file_amazon_kelton_merged</span>):</span></pre><pre class=" CodeMirror-line "><span>            <span class="cm-variable">merge_kelton_amazon</span>()</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl_merged</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_kelton_merged</span>)</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">segment_col</span> = <span class="cm-string">'KELTON_SEGMENT'</span></span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">output_data_dir</span> = <span class="cm-string">'{}/output/{}'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_true_predict</span> = <span class="cm-variable">apply_mapping_logic</span>(<span class="cm-variable">tbl_merged</span>, <span class="cm-variable">output_data_dir</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_true_predict</span>, <span class="cm-variable">index</span> = <span class="cm-string">'PREDICTED_SEGMENT'</span>, <span class="cm-variable">columns</span> = <span class="cm-variable">segment_col</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/mapping_logic/confusion_overall_prediction.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">tbl_true_predict</span>, <span class="cm-variable">index</span> = [<span class="cm-string">'SEGMENT'</span>, <span class="cm-string">'SUBSCRIPTION_PLAN_GROUP_ID'</span>, <span class="cm-string">'INCOME_BRACKET'</span>, <span class="cm-string">'DENSITY_BRACKET'</span>], <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/summary_overall_prediction.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>))</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_true_predict</span>[[<span class="cm-string">'SEGMENT'</span>, <span class="cm-string">'SUBSCRIPTION_PLAN_GROUP_ID'</span>, <span class="cm-string">'INCOME_BRACKET'</span>, <span class="cm-string">'DENSITY_BRACKET'</span>, <span class="cm-string">'PREDICTED_SEGMENT'</span>]].<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/output/{}/predicted_segment.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">data_dir</span>, <span class="cm-variable">target</span>), <span class="cm-variable">index</span> = <span class="cm-builtin">False</span>)</span></pre><pre class=" CodeMirror-line "><span>    </span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbls_amazon</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_feature_merged</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">print</span> <span class="cm-string">'Read %d records.'</span>, <span class="cm-variable">tbls_amazon</span>.<span class="cm-variable">shape</span>[<span class="cm-number">0</span>]</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbls_amazon</span>.<span class="cm-variable">drop_duplicates</span>(<span class="cm-variable">subset</span> = <span class="cm-string">'CUSTOMER_ID'</span>, <span class="cm-variable">keep</span> = <span class="cm-string">'first'</span>, <span class="cm-variable">inplace</span> = <span class="cm-builtin">True</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">print</span> <span class="cm-string">'Dedupped with %d records.'</span>, <span class="cm-variable">tbls_amazon</span>.<span class="cm-variable">shape</span>[<span class="cm-number">0</span>]</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbls_amazon</span> = <span class="cm-variable">tbls_amazon</span>.<span class="cm-variable">loc</span>[<span class="cm-variable">tbls_amazon</span>.<span class="cm-variable">SEGMENT</span>.<span class="cm-variable">notnull</span>(), :]</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbls_amazon</span>.<span class="cm-variable">to_csv</span>(<span class="cm-variable">file_amazon_feature_merged</span>, <span class="cm-variable">index</span> = <span class="cm-builtin">False</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbls_amazon</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">read_csv</span>(<span class="cm-variable">file_amazon_feature_merged</span>, <span class="cm-variable">chunksize</span> = <span class="cm-number">1000000</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">print</span> <span class="cm-string">'Read amazon data.'</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbls_processed</span> = []</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-keyword">for</span> <span class="cm-variable">tbl</span> <span class="cm-keyword">in</span> <span class="cm-variable">tbls_amazon</span>:</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbl</span>.<span class="cm-variable">drop</span>([<span class="cm-string">'BILLING_ADDRESS'</span>], <span class="cm-variable">axis</span> = <span class="cm-number">1</span>, <span class="cm-variable">inplace</span> = <span class="cm-builtin">True</span>)</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-variable">tbls_processed</span>.<span class="cm-variable">append</span>(<span class="cm-variable">apply_mapping_logic</span>(<span class="cm-variable">tbl</span>, <span class="cm-variable">output_data_dir</span>))</span></pre><pre class=" CodeMirror-line "><span>        <span class="cm-keyword">print</span> <span class="cm-string">'Processed 1,000,000 rows.'</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_amazon</span> = <span class="cm-variable">pd</span>.<span class="cm-variable">concat</span>(<span class="cm-variable">tbls_processed</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">tbl_amazon</span>.<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/amazon_mapped.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">output_data_dir</span>), <span class="cm-variable">index</span> = <span class="cm-builtin">False</span>)</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">pd</span>.<span class="cm-variable">pivot_table</span>(<span class="cm-variable">index</span> = <span class="cm-string">'PREDICTED_SEGMENT'</span>, <span class="cm-variable">values</span> = <span class="cm-string">'CURRENT_CUSTOMER_ID'</span>, <span class="cm-variable">aggfunc</span> = <span class="cm-builtin">len</span>).<span class="cm-variable">to_csv</span>(<span class="cm-string">'{}/amazon_mapped_summary.csv'</span>.<span class="cm-builtin">format</span>(<span class="cm-variable">output_data_dir</span>), <span class="cm-variable">index</span> = <span class="cm-builtin">False</span>)</span></pre><pre class=" CodeMirror-line "><span>    </span></pre><pre class=" CodeMirror-line "><span><span class="cm-keyword">if</span> <span class="cm-variable">__name__</span> <span class="cm-operator">==</span> <span class="cm-string">'__main__'</span>:</span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-comment">## map_amazon('audible')</span></span></pre><pre class=" CodeMirror-line "><span>    <span class="cm-variable">predict_amazon</span>(<span class="cm-string">'audible'</span>)</span></pre><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; top: 3392px;"></div><div style="display: none; height: 3407px;" class="CodeMirror-gutters"></div></div></div></div></div></div><div style="display: none;" class="widget-area"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div title="click to scroll output; double click to hide" class="out_prompt_overlay prompt" style=""></div><div style="" class="output"><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'CUSTOMER_ID', 'BILLING_ADDRESS', 'ADDRESS_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'CURRENT_CUSTOMER_ID', 'AUDIBLE_SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'CUSTOMER_ID', 'BILLING_ADDRESS', 'ADDRESS_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'CURRENT_CUSTOMER_ID', 'AUDIBLE_SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'CUSTOMER_ID', 'BILLING_ADDRESS', 'ADDRESS_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'CURRENT_CUSTOMER_ID', 'AUDIBLE_SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'CUSTOMER_ID', 'BILLING_ADDRESS', 'ADDRESS_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'CURRENT_CUSTOMER_ID', 'AUDIBLE_SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'CUSTOMER_ID', 'BILLING_ADDRESS', 'ADDRESS_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'CURRENT_CUSTOMER_ID', 'AUDIBLE_SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'CUSTOMER_ID', 'BILLING_ADDRESS', 'ADDRESS_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'CURRENT_CUSTOMER_ID', 'AUDIBLE_SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'CUSTOMER_ID', 'BILLING_ADDRESS', 'ADDRESS_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'CURRENT_CUSTOMER_ID', 'AUDIBLE_SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Read %d records. 71439300
+Dedupped with %d records. 71439300
+Read amazon data.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+Processing  segment_subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT']
+Processing  segment_income  join keys  ['SEGMENT', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'INCOME_BRACKET', 'PREDICT']
+['SEGMENT', 'INCOME_BRACKET']
+Processing  segment_density  join keys  ['SEGMENT', 'DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SEGMENT', 'DENSITY_BRACKET', 'PREDICT']
+['SEGMENT', 'DENSITY_BRACKET']
+Processing  subscription  join keys  ['SUBSCRIPTION_PLAN_GROUP_ID']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['SUBSCRIPTION_PLAN_GROUP_ID', 'PREDICT']
+['SUBSCRIPTION_PLAN_GROUP_ID']
+Processing  income_density  join keys  ['DENSITY_BRACKET', 'INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'INCOME_BRACKET', 'PREDICT']
+['DENSITY_BRACKET', 'INCOME_BRACKET']
+Processing  income  join keys  ['INCOME_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['INCOME_BRACKET', 'PREDICT']
+['INCOME_BRACKET']
+Processing  density  join keys  ['DENSITY_BRACKET']
+['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1', 'CUSTOMER_ID', 'DENSITY_BRACKET', 'INCOME_BRACKET', 'SUBSCRIPTION_PLAN_GROUP_ID', 'SEGMENT', 'PREDICTED_SEGMENT']
+['DENSITY_BRACKET', 'PREDICT']
+['DENSITY_BRACKET']
+Processed 1,000,000 rows.
+</pre></div></div></div><div title="click to expand output" class="btn btn-default output_collapsed" style="display: none;">. . .</div></div></div></div><div class="end_space"></div></div>
+        <div id="tooltip" class="ipython_tooltip" style="display:none"><div class="tooltipbuttons"><a class="ui-button" role="button" href="#"><span class="ui-icon ui-icon-close">Close</span></a><a title="Grow the tooltip vertically (press shift-tab twice)" id="expanbutton" role="button" class="ui-corner-all" href="#"><span class="ui-icon ui-icon-plus">Expand</span></a><a title="show the current docstring in pager (press shift-tab 4 times)" class="ui-button" role="button" href="#"><span class="ui-icon ui-icon-arrowstop-l-n">Open in Pager</span></a><a style="display: none;" title="Tooltip will linger for 10 seconds while you type" class="ui-button" role="button" href="#"><span class="ui-icon ui-icon-clock">Close</span></a></div><div class="pretooltiparrow"></div><div class="tooltiptext smalltooltip"></div></div>
+    </div>
+</div>
+
+
+
+</div>
+
+
+
+<div class="ui-resizable" id="pager">
+    <div id="pager-contents">
+        <div id="pager-container" class="container"></div>
+    </div>
+    <div id="pager-button-area"><a class="ui-button" title="Open the pager in an external window" role="button"><span class="ui-icon ui-icon-extlink"></span></a><a class="ui-button" title="Close the pager" role="button"><span class="ui-icon ui-icon-close"></span></a></div>
+<div style="z-index: 90;" class="ui-resizable-handle ui-resizable-n"></div></div>
+
+
+
+
+
+
+<script type="text/javascript">
+    sys_info = {"os_name": "posix", "platform": "Linux-4.4.44-39.55.amzn1.x86_64-x86_64-with-glibc2.2.5", "default_encoding": "UTF-8", "notebook_path": "/home/ec2-user/software/anaconda2/lib/python2.7/site-packages/notebook", "sys_platform": "linux2", "sys_version": "2.7.12 |Anaconda 4.1.1 (64-bit)| (default, Jul  2 2016, 17:42:40) \n[GCC 4.4.7 20120313 (Red Hat 4.4.7-1)]", "notebook_version": "4.2.1", "commit_source": "", "commit_hash": "", "sys_executable": "/home/ec2-user/software/anaconda2/bin/python"};
+</script>
+
+<script src="process_kelton_amazon_files/encoding.js" charset="utf-8"></script>
+
+
+    <script src="process_kelton_amazon_files/main.js" type="text/javascript" charset="utf-8"></script>
+
+
+
+
+
+
+<div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px none; margin: 0px;"><div style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; padding: 0px; border: 0px none; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: normal; font-size-adjust: none;" id="MathJax_Font_Test"></div></div><div class="nbp-app"><div class="nbp-app-bar btn-toolbar nbp-toolbar"><div class="btn-toolbar-group btn-group-vertical"><a title="Present" class="btn btn-default btn-lg"><i class="fa fa-fw fa-2x fa-youtube-play fa-2x"></i><label>Present</label></a></div><div class="btn-toolbar-group btn-group-vertical"><a title="Slides" class="btn btn-default btn-lg"><i class="fa fa-fw fa-2x fa-film fa-2x"></i><label>Slides</label></a></div><div class="btn-toolbar-group btn-group-vertical"><a title="Themes" class="btn btn-default btn-lg"><i class="fa fa-fw fa-2x fa-paint-brush fa-2x"></i><label>Themes</label></a></div><div class="btn-toolbar-group btn-group-vertical"><a title="Help" class="btn btn-default btn-lg"><i class="fa fa-fw fa-2x fa-question-circle fa-2x"></i><label>Help</label></a></div></div></div></body></html>

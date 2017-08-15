@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Jul 31 19:03:35 2017
-
-@author: Xiaozhou Rao
 """
 
 import urllib

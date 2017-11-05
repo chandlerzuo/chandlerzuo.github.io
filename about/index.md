@@ -1,9 +1,9 @@
 ---
-layout: default 
+layout: default
 title:  Chandler Zuo
 ---
 
-Chandler Zuo is currently a data scientist at Audible Inc. 
+Chandler Zuo is currently a senior data scientist at Audible Inc. 
 
 ## Education  
 

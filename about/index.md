@@ -36,3 +36,5 @@ Associate of the Society of Actuaries, 2015.
  - [LinkedIn](https://www.linkedin.com/pub/chandler-zuo-ph-d-asa/53/501/bb)
  
  - [Google Scholar](https://scholar.google.com/citations?user=n9tdxSYAAAAJ)
+ 
+ - [Github](https://github.com/chandlerzuo)

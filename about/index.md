@@ -3,15 +3,15 @@ layout: default
 title:  Chandler Zuo
 ---
 
-Chandler Zuo is currently a senior data scientist at Audible Inc. 
+Chandler Zuo is currently a Quantitative Analyst at A.R.T. Advisors.
 
 ## Education  
 
- -  2010 - 2015        PhD in Statistics, University of Wisconsin Madison;
+ -  PhD in Statistics, University of Wisconsin Madison;
 
- -  2012 - 2014       MS in Computer Sciences, University of Wisconsin Madison;
+ -  MS in Computer Sciences, University of Wisconsin Madison;
 
- -  2006 - 2010       Bachelor in Actuarial Sciences, Renmin Unviersity of China.
+ -  Bachelor in Actuarial Sciences, Renmin Unviersity of China.
 
 ## Research Interests
 
@@ -21,9 +21,7 @@ Chandler Zuo is currently a senior data scientist at Audible Inc.
 
  -  Bayesian Methods
 
- -  Text Mining
-
- -  R/Python Programming
+ -  Natural Language Processing
 
 ## Professional Affiliation
 

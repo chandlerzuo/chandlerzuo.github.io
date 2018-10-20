@@ -3,15 +3,13 @@ layout: default
 title:  Chandler Zuo
 ---
 
-Chandler Zuo is currently a Quantitative Analyst at A.R.T. Advisors.
+Chandler Zuo is a statistician and machine learning researcher. He has worked as a data scientist, machine learning scientist and quantitative analyst across finance and technology industries.
 
 ## Education  
 
- -  PhD in Statistics, University of Wisconsin Madison;
+ -  PhD in Statistics, MS in Computer Sciences, University of Wisconsin Madison;
 
- -  MS in Computer Sciences, University of Wisconsin Madison;
-
- -  Bachelor in Actuarial Sciences, Renmin Unviersity of China.
+ -  Bachelor in Statistics & Actuarial Sciences, Renmin Unviersity of China.
 
 ## Research Interests
 

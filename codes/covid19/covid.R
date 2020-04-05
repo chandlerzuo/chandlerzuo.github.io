@@ -1,15 +1,16 @@
+rm(list = ls())
+
 fig_dir = "D:/Dropbox/Public/blog/covid19/"
 setwd(fig_dir)
-
-rm(list = ls())
+source_dir = "D:/Documents/Github/chandlerzuo.github.io/codes/covid19"
 
 library(stringr)
 library(ggplot2)
 library(tidyverse)
 library(urbnmapr)
 
-source("acs_data.R")
-source("covid_data.R")
+source(file.path(source_dir, "acs_data.R"))
+source(file.path(source_dir, "covid_data.R"))
 
 get_model_data <- function(use_cache = TRUE) {
   covid_data <- get_covid_data_from_csv()
@@ -55,29 +56,95 @@ model_data$death_rate <- model_data$death / model_data$infected
 
 jpeg(
   filename = file.path(fig_dir, "med_house_income.jpg"),
-  width = 480,
-  height = 320
+  width = 1200,
+  height = 800
 )
-ggplot(data = model_data, aes(x = B19013_001E, y = death_rate)) + geom_point() + labs(x =
-                                                                                        "Median Household Income", y = "Death Rate") + scale_y_log10() + geom_smooth()
+plot_data = model_data
+ggplot(data = plot_data, aes(x = B19013_001E, y = death_rate)) + 
+  geom_point(size=plot_data$infected / 10000, fill=NA, color="red") + 
+  labs(x ="Median Household Income", y = "Death Rate") + 
+  scale_y_log10() + geom_smooth(aes(weight=plot_data$infected)) + 
+  theme(
+    axis.title.x = element_text(size=20),
+    axis.title.y = element_text(size=20),
+    axis.text.x = element_text(size=18),
+    axis.text.y = element_text(size=18)
+  )
 dev.off()
 
 jpeg(
   filename = file.path(fig_dir, "prop_ge60.jpg"),
-  width = 480,
-  height = 320
+  width = 1200,
+  height = 800
 )
-ggplot(data = model_data, aes(x = PROP_GE60, y = death_rate)) + geom_point() + labs(x =
-                                                                                      "Proportion of Population >= 60", y = "Death Rate") + scale_y_log10() + geom_smooth()
+plot_data = model_data
+ggplot(data = plot_data, aes(x = PROP_GE60, y = death_rate)) + 
+  geom_point(size=plot_data$infected / 10000, fill=NA, color="red") + 
+  labs(x ="Proportion of Population Older than 60", y = "Death Rate") + 
+  scale_y_log10() + geom_smooth(aes(weight=plot_data$infected)) + 
+  theme(
+    axis.title.x = element_text(size=20),
+    axis.title.y = element_text(size=20),
+    axis.text.x = element_text(size=18),
+    axis.text.y = element_text(size=18)
+  )
 dev.off()
+
+
+jpeg(
+  filename = file.path(fig_dir, "prop_female.jpg"),
+  width = 1200,
+  height = 800
+)
+plot_data = model_data
+ggplot(data = plot_data, aes(x = PROP_FEMALE, y = death_rate)) + 
+  geom_point(size=plot_data$infected / 10000, fill=NA, color="red") + 
+  labs(x ="Proportion of Female", y = "Death Rate") + 
+  scale_y_log10() + geom_smooth(aes(weight=plot_data$infected)) + 
+  theme(
+    axis.title.x = element_text(size=20),
+    axis.title.y = element_text(size=20),
+    axis.text.x = element_text(size=18),
+    axis.text.y = element_text(size=18)
+  ) + xlim(c(0.45, 0.55))
+dev.off()
+
 
 jpeg(
   filename = file.path(fig_dir, "insurance.jpg"),
-  width = 480,
-  height = 320
+  width = 1200,
+  height = 800
 )
-ggplot(data = model_data, aes(x = PROP_HEALTH_INS, y = death_rate)) + geom_point() + labs(x =
-                                                                                            "Proportion of People with Health Coverage", y = "Death Rate") + scale_y_log10() + geom_smooth()
+plot_data = model_data
+ggplot(data = plot_data, aes(x = PROP_HEALTH_INS, y = death_rate)) + 
+  geom_point(size=plot_data$infected / 10000, fill=NA, color="red") + 
+  labs(x ="Proportion of Population with Health Insurance", y = "Death Rate") + 
+  scale_y_log10() + geom_smooth(aes(weight=plot_data$infected)) + 
+  theme(
+    axis.title.x = element_text(size=20),
+    axis.title.y = element_text(size=20),
+    axis.text.x = element_text(size=18),
+    axis.text.y = element_text(size=18)
+  )
+dev.off()
+
+
+jpeg(
+  filename = file.path(fig_dir, "asian.jpg"),
+  width = 1200,
+  height = 800
+)
+plot_data = model_data
+ggplot(data = plot_data, aes(x = PROP_ASIAN_ALONE, y = death_rate)) + 
+  geom_point(size=plot_data$infected / 10000, fill=NA, color="red") + 
+  labs(x ="Proportion of Asian Alone Families", y = "Death Rate") + 
+  scale_y_log10() + geom_smooth(aes(weight=plot_data$infected)) + 
+  theme(
+    axis.title.x = element_text(size=20),
+    axis.title.y = element_text(size=20),
+    axis.text.x = element_text(size=18),
+    axis.text.y = element_text(size=18)
+  )
 dev.off()
 
 
@@ -157,9 +224,7 @@ model_data$predicted <-
 model_data[c(432, 1985, 1986, 2007, 2016, 3239), c("state",
                                                    "county",
                                                    "infected",
-                                                   "death",
-                                                   "death_rate",
-                                                   "predicted")]
+                                                   "death")]
 
 model_data$normalized <-
   log((1e-3 + model_data$death_rate) / model_data$predicted)
@@ -187,10 +252,18 @@ map_data %>%
             lat1 = 45) +
   labs(fill = "LOG(Actual Death Rate / Predicted Death Rate)", cex = 20) +
   scale_fill_gradient2(
-    low = "green",
+    low = "#003300",
     high = "red",
-    mid = "yellow",
+    mid = "white",
     midpoint = 0
+  ) + theme(
+    legend.title=element_text(size=20),
+    legend.text=element_text(size=20),
+    axis.text.y=element_blank(),
+    axis.text.x=element_blank(),
+    axis.title.x=element_blank(),
+    axis.title.y=element_blank(),
+    legend.position="bottom"
   )
 dev.off()
 
@@ -204,6 +277,7 @@ stacked_data <- rbind(data.frame(
   rank = rep(plot_data$rank, 2),
   infected=rep(plot_data$infected, 2),
   type = rep(c("Predicted", "Actual"), each = dim(plot_data)[1]),
+  region = rep(plot_data$NAME, 2),
   stringsAsFactors = FALSE
 ))
 
@@ -216,7 +290,7 @@ p <- ggplot(
     color = type,
     size=log(stacked_data$infected)
   ))  + 
-  scale_y_continuous(breaks = 1:dim(plot_data)[1], labels = plot_data$NAME) + 
+  scale_y_continuous(breaks = 1:dim(plot_data)[1], labels = plot_data$NAME[order(plot_data$rank)]) + 
   ylab("") + xlab("Death Rate") +
   guides(color = guide_legend(title = "Death Rate"),
          size=guide_legend(title= "Log(Deaths)", fill="gray", color="gray")) + 

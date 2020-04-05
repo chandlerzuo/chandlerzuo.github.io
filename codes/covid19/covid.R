@@ -56,8 +56,8 @@ model_data$death_rate <- model_data$death / model_data$infected
 
 jpeg(
   filename = file.path(fig_dir, "med_house_income.jpg"),
-  width = 1200,
-  height = 800
+  width = 480,
+  height = 320
 )
 plot_data = model_data
 ggplot(data = plot_data, aes(x = B19013_001E, y = death_rate)) + 
@@ -65,17 +65,17 @@ ggplot(data = plot_data, aes(x = B19013_001E, y = death_rate)) +
   labs(x ="Median Household Income", y = "Death Rate") + 
   scale_y_log10() + geom_smooth(aes(weight=plot_data$infected)) + 
   theme(
-    axis.title.x = element_text(size=20),
-    axis.title.y = element_text(size=20),
-    axis.text.x = element_text(size=18),
-    axis.text.y = element_text(size=18)
+    axis.title.x = element_text(size=10),
+    axis.title.y = element_text(size=10),
+    axis.text.x = element_text(size=8),
+    axis.text.y = element_text(size=8)
   )
 dev.off()
 
 jpeg(
   filename = file.path(fig_dir, "prop_ge60.jpg"),
-  width = 1200,
-  height = 800
+  width = 480,
+  height = 320
 )
 plot_data = model_data
 ggplot(data = plot_data, aes(x = PROP_GE60, y = death_rate)) + 
@@ -83,18 +83,18 @@ ggplot(data = plot_data, aes(x = PROP_GE60, y = death_rate)) +
   labs(x ="Proportion of Population Older than 60", y = "Death Rate") + 
   scale_y_log10() + geom_smooth(aes(weight=plot_data$infected)) + 
   theme(
-    axis.title.x = element_text(size=20),
-    axis.title.y = element_text(size=20),
-    axis.text.x = element_text(size=18),
-    axis.text.y = element_text(size=18)
+    axis.title.x = element_text(size=10),
+    axis.title.y = element_text(size=10),
+    axis.text.x = element_text(size=8),
+    axis.text.y = element_text(size=8)
   )
 dev.off()
 
 
 jpeg(
   filename = file.path(fig_dir, "prop_female.jpg"),
-  width = 1200,
-  height = 800
+  width = 480,
+  height = 320
 )
 plot_data = model_data
 ggplot(data = plot_data, aes(x = PROP_FEMALE, y = death_rate)) + 
@@ -102,18 +102,18 @@ ggplot(data = plot_data, aes(x = PROP_FEMALE, y = death_rate)) +
   labs(x ="Proportion of Female", y = "Death Rate") + 
   scale_y_log10() + geom_smooth(aes(weight=plot_data$infected)) + 
   theme(
-    axis.title.x = element_text(size=20),
-    axis.title.y = element_text(size=20),
-    axis.text.x = element_text(size=18),
-    axis.text.y = element_text(size=18)
+    axis.title.x = element_text(size=10),
+    axis.title.y = element_text(size=10),
+    axis.text.x = element_text(size=8),
+    axis.text.y = element_text(size=8)
   ) + xlim(c(0.45, 0.55))
 dev.off()
 
 
 jpeg(
   filename = file.path(fig_dir, "insurance.jpg"),
-  width = 1200,
-  height = 800
+  width = 480,
+  height = 320
 )
 plot_data = model_data
 ggplot(data = plot_data, aes(x = PROP_HEALTH_INS, y = death_rate)) + 
@@ -121,18 +121,18 @@ ggplot(data = plot_data, aes(x = PROP_HEALTH_INS, y = death_rate)) +
   labs(x ="Proportion of Population with Health Insurance", y = "Death Rate") + 
   scale_y_log10() + geom_smooth(aes(weight=plot_data$infected)) + 
   theme(
-    axis.title.x = element_text(size=20),
-    axis.title.y = element_text(size=20),
-    axis.text.x = element_text(size=18),
-    axis.text.y = element_text(size=18)
+    axis.title.x = element_text(size=10),
+    axis.title.y = element_text(size=10),
+    axis.text.x = element_text(size=8),
+    axis.text.y = element_text(size=8)
   )
 dev.off()
 
 
 jpeg(
   filename = file.path(fig_dir, "asian.jpg"),
-  width = 1200,
-  height = 800
+  width = 480,
+  height = 320
 )
 plot_data = model_data
 ggplot(data = plot_data, aes(x = PROP_ASIAN_ALONE, y = death_rate)) + 
@@ -140,10 +140,10 @@ ggplot(data = plot_data, aes(x = PROP_ASIAN_ALONE, y = death_rate)) +
   labs(x ="Proportion of Asian Alone Families", y = "Death Rate") + 
   scale_y_log10() + geom_smooth(aes(weight=plot_data$infected)) + 
   theme(
-    axis.title.x = element_text(size=20),
-    axis.title.y = element_text(size=20),
-    axis.text.x = element_text(size=18),
-    axis.text.y = element_text(size=18)
+    axis.title.x = element_text(size=10),
+    axis.title.y = element_text(size=10),
+    axis.text.x = element_text(size=8),
+    axis.text.y = element_text(size=8)
   )
 dev.off()
 

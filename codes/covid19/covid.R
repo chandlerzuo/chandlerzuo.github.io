@@ -54,6 +54,8 @@ get_model_data <- function(use_cache = TRUE) {
 model_data <- get_model_data(use_cache = TRUE)
 model_data$death_rate <- model_data$death / model_data$infected
 
+# Univariate analysis
+
 jpeg(
   filename = file.path(fig_dir, "med_house_income.jpg"),
   width = 480,
@@ -147,7 +149,7 @@ ggplot(data = plot_data, aes(x = PROP_ASIAN_ALONE, y = death_rate)) +
   )
 dev.off()
 
-
+# Simple model
 
 summary(model <-
           glm(
@@ -184,6 +186,7 @@ summary(
     )
 )
 
+# Model with all demographic features
 
 all_model_vars <-
   c(names(model_data)[grep("PROP_", names(model_data))], "B19013_001E")
@@ -221,10 +224,14 @@ summary(model <-
 model_data$predicted <-
   predict(model, newdata = model_data, type = "response")
 
+# Excluded counties
+
 model_data[c(432, 1985, 1986, 2007, 2016, 3239), c("state",
                                                    "county",
                                                    "infected",
                                                    "death")]
+
+# Visualize residuals on the map
 
 model_data$normalized <-
   log((1e-3 + model_data$death_rate) / model_data$predicted)
@@ -267,6 +274,7 @@ map_data %>%
   )
 dev.off()
 
+# For counties with >1000 infections, visualize the predicted v.s. actual values.
 
 plot_data <-
   model_data[!is.na(model_data$infected) &

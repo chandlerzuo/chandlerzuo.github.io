@@ -3,7 +3,7 @@ layout: default
 title:  Chandler Zuo
 ---
 
-Chandler Zuo is a current Tech Lead Manager at Meta. His current focus is foundation Large Language Model research. He has worked as a data scientist, machine learning scientist and quantitative analyst across finance and technology industries.
+Chandler Zuo is a current Tech Lead Manager at Meta. His current research focus is foundational large language models. He has worked as a data scientist, machine learning scientist and quantitative analyst across finance and technology industries.
 
 ## Education
 
@@ -13,9 +13,9 @@ Chandler Zuo is a current Tech Lead Manager at Meta. His current focus is founda
 
 ## Research Interests
 
- - Large Language Models
+ -  Large Language Models
 
- - Recommder Systems
+ -  Recommender Systems
 
  -  Machine Learning
 

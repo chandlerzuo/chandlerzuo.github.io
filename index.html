@@ -3,12 +3,12 @@ layout: default
 title:  Chandler Zuo
 ---
 <div id="blogindex">
- 
+
 
   <ul class="posts">
     {% for post in site.categories.blog  %}
       <li>
-        <a class="postlink" href="{{ post.url }}">{{ post.title }}</a>
+        <a class="postlink" href="{{ post.url }}" target="_self">{{ post.title }}</a>
         <span class="timestamp">{{ post.date | date_to_string }}</span>
       </li>
     {% endfor %}

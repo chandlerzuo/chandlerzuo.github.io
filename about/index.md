@@ -3,9 +3,9 @@ layout: default
 title:  Chandler Zuo
 ---
 
-Chandler Zuo is a statistician and machine learning researcher. He has worked as a data scientist, machine learning scientist and quantitative analyst across finance and technology industries.
+Chandler Zuo is a current Tech Lead Manager at Meta. His current focus is foundation Large Language Model research. He has worked as a data scientist, machine learning scientist and quantitative analyst across finance and technology industries.
 
-## Education  
+## Education
 
  -  PhD in Statistics, MS in Computer Sciences, University of Wisconsin Madison;
 
@@ -13,7 +13,9 @@ Chandler Zuo is a statistician and machine learning researcher. He has worked as
 
 ## Research Interests
 
- -  Large Scale Algorithms
+ - Large Language Models
+
+ - Recommder Systems
 
  -  Machine Learning
 
@@ -30,7 +32,7 @@ Associate of the Society of Actuaries, 2015.
  - Email: chandler.c.zuo /a t/ gmail.com
 
  - [LinkedIn](https://www.linkedin.com/pub/chandler-zuo-ph-d-asa/53/501/bb)
- 
+
  - [Google Scholar](https://scholar.google.com/citations?user=n9tdxSYAAAAJ)
- 
+
  - [Github](https://github.com/chandlerzuo)

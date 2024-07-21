@@ -31,7 +31,7 @@ Associate of the Society of Actuaries, 2015.
 
  - Email: chandler.c.zuo /a t/ gmail.com
 
- - [LinkedIn](https://www.linkedin.com/pub/chandler-zuo-ph-d-asa/53/501/bb)
+ - [LinkedIn](https://www.linkedin.com/in/chandler-zuo/)
 
  - [Google Scholar](https://scholar.google.com/citations?user=n9tdxSYAAAAJ)
 

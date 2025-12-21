@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Is tokenization the Missing Link between LLM and Recommender Systems?
+title: Is Tokenization the Missing Link between LLM and Recommender Systems?
 author: <a href="http://chandlerzuo.github.io/">Chandler</a>
 ---
 

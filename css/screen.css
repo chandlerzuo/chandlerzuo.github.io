@@ -170,6 +170,12 @@ blockquote {
 #blogpost {
   margin-bottom: 3em;
 }
+  #blogpost img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5em auto;
+  }
   #blogpost .timestamp {
     color: #aaa;
   }

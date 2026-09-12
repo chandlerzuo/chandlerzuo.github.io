@@ -1,0 +1,39 @@
+{
+  "fetched_utc": "2026-09-12T15:01:17.695028+00:00",
+  "source": "U.S. Department of the Treasury (home.treasury.gov) daily rate CSVs",
+  "datasets": [
+    "daily_treasury_yield_curve (par yields, %)",
+    "daily_treasury_bill_rates (4wk coupon-equivalent, %)"
+  ],
+  "tenors_years": {
+    "1Mo": 0.08333333333333333,
+    "1.5Mo": 0.125,
+    "2Mo": 0.16666666666666666,
+    "3Mo": 0.25,
+    "4Mo": 0.3333333333333333,
+    "6Mo": 0.5,
+    "1Y": 1,
+    "2Y": 2,
+    "3Y": 3,
+    "5Y": 5,
+    "7Y": 7,
+    "10Y": 10,
+    "20Y": 20,
+    "30Y": 30
+  },
+  "curve_coverage": {
+    "start": "1990-01-02",
+    "end": "2026-09-11",
+    "n_days": 9181
+  },
+  "short_rate_sources": {
+    "bill4wk_ce": 6177,
+    "par_3Mo_proxy": 2899,
+    "par_1Mo": 104
+  },
+  "notes": [
+    "Par yields: coupon of a par bond == par yield at issue.",
+    "30Y par yield discontinued Feb-2002..Feb-2006; NS fit interpolates/extrapolates.",
+    "4-week bill coupon-equivalent (investment) yield used for rolling strategy; 1Mo/3Mo par yields splice earlier history as proxy."
+  ]
+}

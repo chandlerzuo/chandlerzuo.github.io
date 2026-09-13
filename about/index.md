@@ -3,7 +3,7 @@ layout: default
 title:  Chandler Zuo
 ---
 
-Chandler Zuo is a current Principal Scientist at Amazon. His current research focus is foundational large language models. He has worked as a data scientist, machine learning scientist and quantitative analyst across finance and technology industries.
+Chandler Zuo is a current Principal Scientist at Amazon. His current research focus is Scaling Law for recommender systems. He has worked as a data scientist, machine learning scientist and quantitative analyst across finance and technology industries.
 
 ## Education
 

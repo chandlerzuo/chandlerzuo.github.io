@@ -148,9 +148,56 @@ def fig4_ns_components_fit():
     plt.close(fig)
 
 
+def fig5_forward_irr_distributions():
+    """Distribution of simulated forward bond IRR by horizon (Part 2)."""
+    s = pd.read_csv(OUT + "part2_sim_irr_samples.csv")
+    fig, axes = plt.subplots(2, 2, figsize=(10, 7), sharey=False)
+    for ax, h in zip(axes.ravel(), HORIZONS):
+        bond = s[f"bond_{h}y"].values * 100
+        bill_med = np.median(s[f"bill_{h}y"].values) * 100
+        p_neg = (bond < 0).mean() * 100
+        ax.hist(bond, bins=80, color=BOND, alpha=0.85)
+        ax.axvline(0, color="grey", lw=0.9)
+        ax.axvline(bill_med, color=BILL, lw=1.8, ls="--", label=f"bill median {bill_med:.1f}%")
+        ax.set_title(f"{h} years ahead   (P[IRR<0] = {p_neg:.0f}%)")
+        ax.set_xlabel("Bond IRR (%)")
+        ax.legend(frameon=False, fontsize=9)
+    axes[0, 0].set_ylabel("Simulated paths")
+    axes[1, 0].set_ylabel("Simulated paths")
+    fig.suptitle("Distribution of simulated forward bond IRR by horizon (20,000 paths)", y=0.99)
+    fig.tight_layout(rect=[0, 0, 1, 0.97])
+    fig.savefig(OUT + "part2_irr_distributions.png", bbox_inches="tight")
+    plt.close(fig)
+
+
+def fig6_forward_sharpe():
+    """Forward-looking Sharpe of bond excess return over bills, by horizon (simulation)."""
+    s = pd.read_csv(OUT + "part2_sim_irr_samples.csv")
+    sharpe = {}
+    for h in HORIZONS:
+        e = s[f"bond_{h}y"].values - s[f"bill_{h}y"].values
+        sharpe[h] = e.mean() / e.std(ddof=1)
+    x = np.arange(len(HORIZONS))
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.bar(x, [sharpe[h] for h in HORIZONS], width=0.55, color=BOND)
+    for xi, h in zip(x, HORIZONS):
+        ax.annotate(f"{sharpe[h]:.2f}", (xi, sharpe[h]), ha="center", va="bottom", fontsize=10)
+    ax.set_xticks(x)
+    ax.set_xticklabels([f"{h}y" for h in HORIZONS])
+    ax.set_xlabel("Holding horizon")
+    ax.set_ylabel("Forward Sharpe of excess return over bills")
+    ax.set_title("Forward-looking Sharpe ratio by horizon\n(Nelson-Siegel + VAR(1) simulation, 20,000 paths, from today)")
+    ax.set_ylim(0, max(sharpe.values()) * 1.15)
+    fig.tight_layout()
+    fig.savefig(OUT + "part2_forward_sharpe.png", bbox_inches="tight")
+    plt.close(fig)
+
+
 if __name__ == "__main__":
     fig1_irr_boxplot()
     fig2_sharpe_bars()
     fig3_simulated_curve_distribution()
     fig4_ns_components_fit()
-    print("wrote 4 figures to", OUT)
+    fig5_forward_irr_distributions()
+    fig6_forward_sharpe()
+    print("wrote 6 figures to", OUT)

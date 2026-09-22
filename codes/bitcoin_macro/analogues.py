@@ -34,6 +34,12 @@ warnings.filterwarnings("ignore")
 TRADING_DAYS = 252
 BTC_DAYS = 365          # Bitcoin trades every day
 
+# The comparison panel starts here rather than in 1926. The dollar index begins
+# in 1973, and a dollar sensitivity is now a required matching axis, so windows
+# before that date could never be scored on it. Making the restriction explicit
+# is better than letting complete-case filtering impose it silently.
+PANEL_START = "1973-01-01"
+
 # Reconciled regime chronology. Boundaries marked (S) are statistically robust
 # (wild-bootstrap significant correlation breaks, or >=2-of-3 method agreement);
 # those marked (N) are narrative/event anchors retained for economic
@@ -128,7 +134,7 @@ def long_panel() -> tuple[pd.DataFrame, pd.DataFrame]:
     for c in ind.columns:
         add(f"ind_{c}", ind[c])
 
-    assets = pd.DataFrame(cand)
+    assets = pd.DataFrame(cand).loc[PANEL_START:]
 
     bench = pd.DataFrame({
         "eq": ff["Mkt-RF"],
@@ -144,16 +150,43 @@ def long_panel() -> tuple[pd.DataFrame, pd.DataFrame]:
     elif "DTWEXBGS" in fr:
         usd = np.log(fr["DTWEXBGS"].dropna()).diff()
     bench["usd"] = usd
-    return assets, bench
+    return assets, bench.loc[PANEL_START:]
 
 
 # ------------------------------------------------------------------- features
+# Everything computed for each window. Note the split below: not all of these
+# are used to MEASURE similarity.
 FEATURES = ["vol_ann", "sharpe", "skew", "exkurt", "max_dd", "ar1",
-            "frac_pos", "rho_eq", "rho_gold", "rho_d10y", "rho_usd"]
+            "frac_pos", "rho_eq", "rho_gold", "rho_d10y", "rho_usd",
+            "rho_trade", "rho_cpi"]
 
-BENCH_COLS = ["eq", "gold", "d10y", "usd"]
+# Axes the distance is actually computed on. Two describe the return
+# distribution -- annualised volatility and the Sharpe ratio, i.e. how much risk
+# and how much reward for it -- and the rest are sensitivities to MACRO STATE
+# variables. Higher moments (skew, kurtosis), drawdown, autocorrelation and the
+# positive-period share are computed and available but left out of the metric:
+# with only 65 assets they add dimensions faster than they add information, and
+# drawdown in particular is largely a restatement of volatility over a window.
+#
+# Correlation with GOLD and with EQUITIES are deliberately EXCLUDED from the
+# distance and reported as diagnostics only. Both would leak: gold and silver
+# are themselves candidate analogues, so "moves with gold" scores a precious
+# metal highly for being a precious metal (and gold's own rho_gold is 1.0 by
+# construction), and the candidate pool is dominated by US industry portfolios,
+# which correlate with the equity market by construction. Scoring candidates on
+# how much they resemble other candidates is circular. Keeping the two out of
+# the metric and displaying them afterwards turns them into an out-of-sample
+# check: the gold column in the essay's second chart is now something the
+# matcher never optimised.
+MATCH_FEATURES = ["vol_ann", "sharpe",
+                  "rho_usd", "rho_d10y", "rho_trade", "rho_cpi"]
+
+# A feature is admitted only if this share of reference windows can compute it.
+MIN_FEATURE_COVERAGE = 0.50
+
+BENCH_COLS = ["eq", "gold", "d10y", "usd", "trade", "cpi"]
 RHO_NAMES = {"eq": "rho_eq", "gold": "rho_gold", "d10y": "rho_d10y",
-             "usd": "rho_usd"}
+             "usd": "rho_usd", "trade": "rho_trade", "cpi": "rho_cpi"}
 
 
 def _rowwise_corr(A: np.ndarray, B: np.ndarray, min_n: int = 40) -> np.ndarray:
@@ -249,14 +282,25 @@ def featurize(r: pd.Series, bench: pd.DataFrame, per_year: float) -> dict | None
 
 
 def reference_windows(assets: pd.DataFrame, bench: pd.DataFrame,
-                     length_days: int, step: int = 21) -> pd.DataFrame:
-    """Every rolling window of the target length, for every candidate asset."""
+                     length_days: int, step: int = 21,
+                     end_before: pd.Timestamp | None = None) -> pd.DataFrame:
+    """Every rolling window of the target length, for every candidate asset.
+
+    end_before makes the search genuinely HISTORICAL: a candidate window is only
+    admissible if it finished before the Bitcoin regime being matched began.
+    Without it the nearest window is often the same calendar period, or a later
+    one, which is a statement about co-movement rather than about precedent --
+    and "bitcoin's closest historical analogue is natural gas over exactly the
+    same months" answers a different question than the one being asked.
+    """
     frames = []
     for name in assets.columns:
         s = assets[name].dropna()
         if len(s) < length_days + 10:
             continue
         starts = np.arange(0, len(s) - length_days + 1, step)
+        if end_before is not None:
+            starts = starts[s.index[starts + length_days - 1] < end_before]
         if len(starts) == 0:
             continue
         f = window_features(s, bench, TRADING_DAYS, length_days, starts)
@@ -459,11 +503,13 @@ def main() -> int:
         span_days = (pd.Timestamp(b) - pd.Timestamp(a)).days
         L = max(90, int(span_days * TRADING_DAYS / 365))
 
-        ref = reference_windows(assets, bench, L, step=21)
+        ref = reference_windows(assets, bench, L, step=21,
+                               end_before=pd.Timestamp(a))
         if ref.empty:
+            emit(f"\n--- {name}: no candidate window ends before {a}, skipped")
             continue
-        feats = [f for f in FEATURES
-                 if ref[f].notna().mean() > 0.6]
+        feats = [f for f in MATCH_FEATURES
+                 if ref[f].notna().mean() > MIN_FEATURE_COVERAGE]
         btc_f = featurize(r_btc, bench, BTC_DAYS)
         btc_f["vol_ann"] = r_btc.std() * np.sqrt(BTC_DAYS)
         feats = [f for f in feats if np.isfinite(btc_f.get(f, np.nan))]
@@ -510,6 +556,11 @@ def main() -> int:
         emit(f"\n--- {name}  [{a} .. {b}]  boundary={tag} ---")
         emit(f"    window {L} trading days; {len(refv)} reference windows from "
              f"{refv['asset'].nunique()} assets; features={len(feats)}")
+        emit(f"    match axes ({len(feats)}): {', '.join(feats)}")
+        emit(f"    reported but NOT matched: rho_eq, rho_gold "
+             f"(both would leak -- see module docstring)")
+        emit(f"    candidate windows all end before {a}: "
+             f"{refv['start'].min().date()} to {refv['end'].max().date()}")
         emit(f"    BTC: vol={btc_f['vol_ann']:.2f} sharpe={btc_f['sharpe']:+.2f} "
              f"skew={btc_f['skew']:+.2f} maxDD={btc_f['max_dd']:.2f} "
              f"rho_eq={btc_f['rho_eq']:+.2f} rho_gold={btc_f['rho_gold']:+.2f}")
@@ -533,7 +584,7 @@ def main() -> int:
                 ["asset", "start", "end", "d_maha", "d_dtw", "d_wass",
                  "vol_ann", "sharpe", "skew", "max_dd", "rho_eq"]].to_dict()})
 
-        # leave-one-feature-out: does the match survive dropping any one feature?
+        # leave-one-feature-out: does the match survive dropping any one axis?
         stable = []
         for drop in feats:
             sub = [f for f in feats if f != drop]

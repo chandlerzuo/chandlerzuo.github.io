@@ -40,16 +40,22 @@ SURFACE = "#ffffff"
 FIG = ROOT / "outputs" / "figures"
 
 # (label, asset key, analogue window, BTC regime window, frequency)
+# Best match per regime under the clean metric (no gold/equity correlation in
+# the distance, panel restricted to 1973+). Read off analogue_matches.csv.
+# Best HISTORICAL match per regime: candidate windows must end before the
+# bitcoin regime begins. Read off analogue_matches.csv / _monthly_em.csv.
 PAIRS = [
-    ("Crude oil, 2020-21", "cmdty_wti", "2020-03-16", "2021-02-19",
+    ("Silver, 1979-80", "metal_silver", "1979-01-02", "1980-10-31",
+     "2020-02-20", "2021-11-09", "D"),
+    ("Natural gas, 2002-05", "cmdty_natgas", "2002-01-11", "2005-10-07",
      "2013-01-01", "2013-12-06", "D"),
-    ("Natural gas, 2021-22", "cmdty_natgas", "2021-03-08", "2022-04-22",
-     "2019-01-01", "2020-02-19", "D"),
-    ("Silver, 1978-80", "metal_silver", "1978-10-02", "1980-09-25",
+    ("Silver, 1978-80", "metal_silver", "1978-11-01", "1980-11-28",
      "2017-01-01", "2018-12-31", "D"),
-    ("American car makers,\n2019-25", "ind_Autos", "2019-01-31", "2025-09-30",
-     "2020-01-01", "2026-09-30", "M"),
-    ("Turkish equities,\n1989-2003", "em_tr_Turkey", "1989-07-31", "2003-03-31",
+    ("Natural gas, 2008-09", "cmdty_natgas", "2008-06-02", "2009-07-10",
+     "2021-11-10", "2022-12-31", "D"),
+    ("Coal stocks, 2015-18", "ind_Coal", "2015-12-15", "2018-06-29",
+     "2023-01-01", "2025-07-18", "D"),
+    ("Natural gas,\n1997-2011", "cmdty_natgas", "1997-04-30", "2011-01-31",
      "2013-01-01", "2026-09-30", "M"),
 ]
 
@@ -85,11 +91,36 @@ def load_assets():
     daily["metal_silver"] = np.log(p[p > 0]).diff().dropna()
 
     ind = industry49()
+    # daily industry series are needed too: some best matches are industry
+    # portfolios measured at daily frequency (e.g. coal stocks in 2000-01)
+    for col in ("Coal", "Autos", "FabPr", "Gold", "Steel", "Clths"):
+        if col in ind.columns:
+            daily[f"ind_{col}"] = ind[col].dropna()
     indm = (1 + ind).resample("ME").prod() - 1
-    monthly["ind_Autos"] = indm["Autos"].dropna()
-    p = oecd["tr"].dropna()
-    monthly["em_tr_Turkey"] = np.log(p[p > 0]).diff().dropna()
+    for col in ("Autos", "Coal", "Gold", "Fun"):
+        if col in indm.columns:
+            monthly[f"ind_{col}"] = indm[col].dropna()
+    # monthly versions of the daily commodity/metal series, for pairings matched
+    # at monthly frequency
+    for k, v in list(daily.items()):
+        lvl = v.cumsum()
+        monthly[k] = lvl.resample("ME").last().diff().dropna()
+    for cc in ("tr", "mx"):
+        if cc in oecd:
+            q = oecd[cc].dropna()
+            monthly[f"em_{cc}_" + ("Turkey" if cc == "tr" else "Mexico")] = \
+                np.log(q[q > 0]).diff().dropna()
     return daily, monthly
+
+
+def btc_window_label(r: pd.Series) -> str:
+    """Compact label for the bitcoin window a panel is comparing against."""
+    a, b = r.index.min(), r.index.max()
+    if a.year == b.year:
+        return f"{a.strftime('%b')}-{b.strftime('%b %Y')}"
+    if b.year - a.year == 1 and (a.month > 1 or b.month < 12):
+        return f"{a.strftime('%b %Y')}-{b.strftime('%b %Y')}"
+    return f"{a.year}-{str(b.year)[-2:]}"
 
 
 def norm_path(r: pd.Series) -> np.ndarray:
@@ -111,7 +142,7 @@ def figure_paths(daily, monthly, btc_d, btc_m):
 
     fig = plt.figure(figsize=(10.6, 7.4))
     fig.patch.set_facecolor(SURFACE)
-    gs = fig.add_gridspec(2, 3, hspace=0.40, wspace=0.20,
+    gs = fig.add_gridspec(2, 3, hspace=0.42, wspace=0.20,
                           left=0.05, right=0.985, top=0.745, bottom=0.075)
 
     fig.add_artist(Rectangle((0.05, 0.955), 0.045, 0.019, facecolor=RED,
@@ -122,6 +153,8 @@ def figure_paths(daily, monthly, btc_d, btc_m):
                          "standard deviation 1", fontsize=11, color=GREY)
     fig.text(0.05, 0.808, "DTW = dynamic time-warping distance; lower means a "
                          "closer match", fontsize=9.5, color=GREY)
+    fig.text(0.70, 0.893, "Bitcoin", fontsize=13, color=BLUE, weight="bold")
+    fig.text(0.80, 0.893, "analogue", fontsize=13, color=RED, weight="bold")
 
     for i, (lab, key, a0, a1, b0, b1, freq) in enumerate(PAIRS):
         ax = fig.add_subplot(gs[i // 3, i % 3])
@@ -134,8 +167,13 @@ def figure_paths(daily, monthly, btc_d, btc_m):
         pb, pa = norm_path(bt), norm_path(an)
         ax.plot(x, pb, color=BLUE, lw=2.2, zorder=3)
         ax.plot(x, pa, color=RED, lw=1.9, zorder=2, alpha=0.9)
+        # Panel title names the analogue; the subtitle names the bitcoin window
+        # it is being compared against, which differs from panel to panel.
         econ(ax, lab.replace("\n", " "))
         ax.title.set_fontsize(11.5)
+        ax.annotate(f"vs bitcoin {btc_window_label(bt)}", xy=(0.03, 0.95),
+                   xycoords="axes fraction", fontsize=9.5, color=BLUE,
+                   ha="left", va="top")
         ax.set_xticks([])
         ax.set_yticks([-2, 0, 2])
         ax.tick_params(axis="y", labelsize=10)
@@ -144,25 +182,9 @@ def figure_paths(daily, monthly, btc_d, btc_m):
                    xycoords="axes fraction", fontsize=10, color=GREY,
                    ha="right")
 
-    # spare cell: legend
-    axl = fig.add_subplot(gs[1, 2])
-    axl.axis("off")
-    axl.plot([0.06, 0.24], [0.66, 0.66], color=BLUE, lw=2.6,
-            transform=axl.transAxes)
-    axl.text(0.30, 0.66, "Bitcoin", transform=axl.transAxes, fontsize=13,
-            color=BLUE, weight="bold", va="center")
-    axl.plot([0.06, 0.24], [0.50, 0.50], color=RED, lw=2.3,
-            transform=axl.transAxes)
-    axl.text(0.30, 0.50, "analogue", transform=axl.transAxes, fontsize=13,
-            color=RED, weight="bold", va="center")
-    axl.text(0.06, 0.29, "Amplitude is normalised away,\nso these compare SHAPE, "
-                        "not size.\nSee the next chart for the\ndimensions where "
-                        "they differ.", transform=axl.transAxes, fontsize=9.5,
-            color=GREY, va="top")
-
-    fig.text(0.05, 0.022, "First three panels daily data, last two monthly. "
-                         "Sources: CoinMetrics; FRED; LBMA; OECD; Kenneth "
-                         "French data library; author's calculations",
+    fig.text(0.05, 0.022, "Amplitude is normalised away, so these compare shape, "
+                         "not size. First five panels daily, last monthly. "
+                         "Sources: CoinMetrics; FRED; LBMA; author's calculations",
             fontsize=9, color=GREY, style="italic")
     out = FIG / "essay_analogue_paths.png"
     fig.savefig(out, dpi=200, facecolor=SURFACE)
@@ -178,10 +200,11 @@ def figure_features(daily, monthly, btc_d, btc_m, bench_d, bench_m):
     """
     from matplotlib.patches import Rectangle
 
-    show = ["vol_ann", "sharpe", "skew", "max_dd", "rho_eq", "rho_gold"]
-    nice = {"vol_ann": "Volatility", "sharpe": "Sharpe ratio", "skew": "Skew",
-            "max_dd": "Max drawdown", "rho_eq": "Correlation w/ equities",
-            "rho_gold": "Correlation w/ gold"}
+    # Only the attributes the search actually uses. Correlations with gold and
+    # with equities are not search attributes and are not shown here.
+    show = ["vol_ann", "sharpe", "rho_usd", "rho_d10y"]
+    nice = {"vol_ann": "Volatility", "sharpe": "Sharpe ratio",
+            "rho_usd": "Corr. w/ dollar", "rho_d10y": "Corr. w/ 10y yield"}
 
     rows = []
     for lab, key, a0, a1, b0, b1, freq in PAIRS:
@@ -202,26 +225,28 @@ def figure_features(daily, monthly, btc_d, btc_m, bench_d, bench_m):
                         "analogue": fa[f], "btc": fb[f]})
     d = pd.DataFrame(rows)
 
-    fig = plt.figure(figsize=(10.6, 7.6))
+    fig = plt.figure(figsize=(9.6, 7.4))
     fig.patch.set_facecolor(SURFACE)
-    gs = fig.add_gridspec(2, 3, hspace=0.62, wspace=0.62,
-                          left=0.185, right=0.985, top=0.745, bottom=0.085)
+    gs = fig.add_gridspec(2, 2, hspace=0.58, wspace=0.42,
+                          left=0.215, right=0.982, top=0.735, bottom=0.085)
 
     fig.add_artist(Rectangle((0.05, 0.955), 0.045, 0.019, facecolor=RED,
                             edgecolor="none", transform=fig.transFigure))
-    fig.text(0.05, 0.893, "Close on risk, apart on character", fontsize=17,
+    fig.text(0.05, 0.893, "Close, but never close enough", fontsize=17,
             weight="bold", color=INK)
-    fig.text(0.05, 0.845, "Volatility and drawdown match because that is what "
-                         "the search optimises", fontsize=11, color=GREY)
-    fig.text(0.05, 0.808, "The informative gaps are in the Sharpe ratio and the "
-                         "correlation with gold", fontsize=9.5, color=GREY)
-    fig.text(0.60, 0.893, "Bitcoin", fontsize=13, color=BLUE, weight="bold")
-    fig.text(0.72, 0.893, "analogue", fontsize=13, color=RED, weight="bold")
+    fig.text(0.04, 0.845, "The four attributes the search matches on. A short "
+                         "bar means bitcoin and its analogue agree",
+             fontsize=11, color=GREY)
+    fig.text(0.04, 0.808, "No pairing agrees on all four, which is why none of "
+                         "them clears the chance benchmark",
+             fontsize=9.5, color=GREY)
+    fig.text(0.62, 0.893, "Bitcoin", fontsize=13, color=BLUE, weight="bold")
+    fig.text(0.78, 0.893, "analogue", fontsize=13, color=RED, weight="bold")
 
     pairs = list(dict.fromkeys(d["pair"]))
     y = np.arange(len(pairs))[::-1]
     for i, f in enumerate([nice[c] for c in show]):
-        ax = fig.add_subplot(gs[i // 3, i % 3])
+        ax = fig.add_subplot(gs[i // 2, i % 2])
         sub = d[d["feat"] == f].set_index("pair").loc[pairs]
         ax.hlines(y, sub["btc"], sub["analogue"], color=GRID, lw=3.0, zorder=1)
         ax.scatter(sub["analogue"], y, s=72, color=RED, zorder=3)
@@ -232,16 +257,16 @@ def figure_features(daily, monthly, btc_d, btc_m, bench_d, bench_m):
         ax.grid(True, axis="x", color=GRID, lw=0.7)
         ax.tick_params(axis="x", labelsize=10)
         ax.set_ylim(-0.7, len(pairs) - 0.3)
-        if f in ("Correlation w/ equities", "Correlation w/ gold",
-                 "Sharpe ratio", "Skew"):
+        if f.startswith("Corr.") or f in ("Sharpe ratio", "Skew"):
             ax.axvline(0, color=GREY, lw=1.0, zorder=0)
-        if i % 3 == 0:
+        if i % 2 == 0:
             ax.set_yticks(y)
             ax.set_yticklabels(pairs, fontsize=10.5, color=INK)
         else:
             ax.set_yticks([])
 
-    fig.text(0.05, 0.022, "Volatility and drawdown annualised, in return units. "
+    fig.text(0.04, 0.022, "Volatility annualised. The monthly pairing also "
+                         "matches on the trade balance and inflation. "
                          "Sources: as above; author's calculations",
             fontsize=9, color=GREY, style="italic")
     out = FIG / "essay_analogue_features.png"

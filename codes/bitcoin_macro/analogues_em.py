@@ -25,7 +25,8 @@ import numpy as np
 import pandas as pd
 from scipy.stats import wasserstein_distance
 
-from analogues import (FEATURES, dtw_distance, industry49, mahalanobis_setup,
+from analogues import (MATCH_FEATURES, MIN_FEATURE_COVERAGE, PANEL_START,
+                       dtw_distance, industry49, mahalanobis_setup,
                        mdist_to, resample_path, window_features)
 from fetchlib import PROC, ROOT
 
@@ -98,7 +99,7 @@ def monthly_panel() -> tuple[pd.DataFrame, pd.DataFrame]:
 
     assets = pd.DataFrame(cand)
     assets.index = assets.index.to_period("M").to_timestamp("M")
-    assets = assets.groupby(level=0).last()
+    assets = assets.groupby(level=0).last().loc[PANEL_START:]
 
     # --- benchmarks for the correlation features
     ffm2 = ffm.copy()
@@ -109,6 +110,25 @@ def monthly_panel() -> tuple[pd.DataFrame, pd.DataFrame]:
         if sid in fr:
             u = np.log(fr[sid].dropna().resample("ME").last()).diff()
             usd = u if usd is None else u.combine_first(usd)
+    # US trade balance, monthly from 1955 (exports minus imports), entered as a
+    # change and scaled by the level of trade so the series is comparable across
+    # five decades of nominal growth. This is the macro-state axis analogous to
+    # dollar strength: an asset that responds to the external balance is
+    # responding to something about the dollar's fundamentals, not to another
+    # candidate asset.
+    trade = None
+    if {"XTEXVA01USM667S", "XTIMVA01USM667S"}.issubset(fr.columns):
+        ex = fr["XTEXVA01USM667S"].dropna().resample("ME").last()
+        im = fr["XTIMVA01USM667S"].dropna().resample("ME").last()
+        bal = (ex - im)
+        scale = (ex + im).rolling(12, min_periods=6).mean()
+        trade = (bal / scale).diff()
+
+    cpi = None
+    if "CPIAUCSL" in fr:
+        c = fr["CPIAUCSL"].dropna().resample("ME").last()
+        cpi = np.log(c[c > 0]).diff().diff()   # change in monthly inflation rate
+
     bench = pd.DataFrame({
         "eq": ffm2["Mkt-RF"],
         "rf": ffm2["RF"],
@@ -116,19 +136,26 @@ def monthly_panel() -> tuple[pd.DataFrame, pd.DataFrame]:
         "d10y": fr["DGS10"].dropna().resample("ME").last().diff()
         if "DGS10" in fr else np.nan,
         "usd": usd,
+        "trade": trade,
+        "cpi": cpi,
     })
     bench.index = bench.index.to_period("M").to_timestamp("M")
-    bench = bench.groupby(level=0).last()
+    bench = bench.groupby(level=0).last().loc[PANEL_START:]
     return assets, bench
 
 
-def ref_windows(assets: pd.DataFrame, bench: pd.DataFrame, L: int) -> pd.DataFrame:
+def ref_windows(assets: pd.DataFrame, bench: pd.DataFrame, L: int,
+                end_before=None) -> pd.DataFrame:
     frames = []
     for name in assets.columns:
         s = assets[name].dropna()
         if len(s) < L + 2:
             continue
         starts = np.arange(0, len(s) - L + 1, 1)
+        if end_before is not None:
+            starts = starts[s.index[starts + L - 1] < end_before]
+        if len(starts) == 0:
+            continue
         f = window_features(s, bench, MONTHS_PER_YEAR, L, starts,
                             min_corr_n=MIN_CORR_N)
         f["asset"] = name
@@ -178,12 +205,14 @@ def main() -> int:
                  f"floor, skipped")
             continue
 
-        ref = ref_windows(assets, bench, L)
+        ref = ref_windows(assets, bench, L, end_before=pd.Timestamp(a))
         if ref.empty:
+            emit(f"\n--- {name}: no candidate window ends before {a}, skipped")
             continue
         btc_f = window_features(y, bench, MONTHS_PER_YEAR, L, np.array([0]),
                                min_corr_n=MIN_CORR_N).iloc[0]
-        feats = [f for f in FEATURES if ref[f].notna().mean() > 0.6
+        feats = [f for f in MATCH_FEATURES
+                 if ref[f].notna().mean() > MIN_FEATURE_COVERAGE
                  and np.isfinite(btc_f.get(f, np.nan))]
         mu, sd, Ci, ok = mahalanobis_setup(ref, feats)
         refv = ref[ok].reset_index(drop=True)
@@ -220,6 +249,7 @@ def main() -> int:
         emit(f"\n--- {name}  [{a} .. {b}]  window = {L} months ---")
         emit(f"    {len(refv)} reference windows from {refv['asset'].nunique()} "
              f"assets; features = {len(feats)}")
+        emit(f"    match axes ({len(feats)}): {', '.join(feats)}")
         emit(f"    BTC: vol={btc_f['vol_ann']:.2f} sharpe={btc_f['sharpe']:+.2f} "
              f"skew={btc_f['skew']:+.2f} maxDD={btc_f['max_dd']:.2f} "
              f"rho_eq={btc_f['rho_eq']:+.2f}")

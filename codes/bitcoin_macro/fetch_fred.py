@@ -53,8 +53,12 @@ CATALOG: dict[str, list[str]] = {
     "commodity": ["DCOILWTICO", "WTISPLC", "DCOILBRENTEU", "DHHNGSP",
                   "PCOPPUSDM", "PALLFNFINDEXM", "IR14270"],
     # --- macro activity / inflation ----------------------------------------
+    # XTEXVA01USM667S / XTIMVA01USM667S are monthly US exports and imports from
+    # 1955; their difference is the trade balance used as a macro-state axis in
+    # the analogue search, where a 1973+ history is needed.
     "macro": ["WEI", "CPIAUCSL", "CPILFESL", "INDPRO", "UNRATE", "PAYEMS",
-              "GDPC1", "UMCSENT", "USEPUINDXD"],
+              "GDPC1", "UMCSENT", "USEPUINDXD",
+              "XTEXVA01USM667S", "XTIMVA01USM667S", "NETEXP"],
     # --- crypto cross-check -------------------------------------------------
     "crypto": ["CBBTCUSD", "CBETHUSD"],
 }

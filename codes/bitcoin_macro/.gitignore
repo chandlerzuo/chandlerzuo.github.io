@@ -1,0 +1,13 @@
+# Data is NOT committed: it is downloaded and built by the scripts here.
+#   ./run_all.sh            # fetch -> data/raw/, build -> data/processed/
+data/
+
+# Analysis outputs are regenerable, so only the figures the blog post embeds
+# are tracked. Everything else appears here after a run and stays untracked.
+outputs/tables/
+outputs/figures/*
+!outputs/figures/essay_*.png
+
+__pycache__/
+*.pyc
+.venv/

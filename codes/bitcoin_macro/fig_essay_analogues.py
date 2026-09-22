@@ -100,45 +100,70 @@ def norm_path(r: pd.Series) -> np.ndarray:
 
 
 def figure_paths(daily, monthly, btc_d, btc_m):
-    fig, axes = plt.subplots(1, 5, figsize=(13.2, 3.5))
-    fig.patch.set_facecolor(SURFACE)
-    fig.subplots_adjust(left=0.04, right=0.99, top=0.66, bottom=0.14, wspace=0.16)
+    """5 pairs on a 2x3 grid; the spare cell carries the legend.
 
+    A single row of five panels renders each one so narrow that the tick and
+    annotation type becomes unreadable at blog width. Two rows of three roughly
+    doubles the width per panel, which lets every label go up several points.
+    """
     from matplotlib.patches import Rectangle
-    fig.add_artist(Rectangle((0.04, 0.955), 0.035, 0.022, facecolor=RED,
-                            edgecolor="none", transform=fig.transFigure))
-    fig.text(0.04, 0.875, "Shapes that rhyme", fontsize=15, weight="bold",
-            color=INK)
-    fig.text(0.04, 0.80, "Cumulative return paths, each scaled to mean 0 and "
-                         "standard deviation 1. DTW = dynamic time-warping "
-                         "distance (lower = closer)",
-            fontsize=8.6, color=GREY)
+    from analogues import dtw_distance
 
-    for ax, (lab, key, a0, a1, b0, b1, freq) in zip(axes, PAIRS):
+    fig = plt.figure(figsize=(10.6, 7.4))
+    fig.patch.set_facecolor(SURFACE)
+    gs = fig.add_gridspec(2, 3, hspace=0.40, wspace=0.20,
+                          left=0.05, right=0.985, top=0.745, bottom=0.075)
+
+    fig.add_artist(Rectangle((0.05, 0.955), 0.045, 0.019, facecolor=RED,
+                            edgecolor="none", transform=fig.transFigure))
+    fig.text(0.05, 0.893, "Shapes that rhyme", fontsize=17, weight="bold",
+            color=INK)
+    fig.text(0.05, 0.845, "Cumulative return paths, each scaled to mean 0 and "
+                         "standard deviation 1", fontsize=11, color=GREY)
+    fig.text(0.05, 0.808, "DTW = dynamic time-warping distance; lower means a "
+                         "closer match", fontsize=9.5, color=GREY)
+
+    for i, (lab, key, a0, a1, b0, b1, freq) in enumerate(PAIRS):
+        ax = fig.add_subplot(gs[i // 3, i % 3])
         src = daily if freq == "D" else monthly
         btc = btc_d if freq == "D" else btc_m
-        an = src[key].loc[a0:a1]
-        bt = btc.loc[b0:b1]
+        an, bt = src[key].loc[a0:a1], btc.loc[b0:b1]
         if len(an) < 10 or len(bt) < 10:
             continue
         x = np.linspace(0, 1, 200)
-        ax.plot(x, norm_path(bt), color=BLUE, lw=1.9, zorder=3)
-        ax.plot(x, norm_path(an), color=RED, lw=1.6, zorder=2, alpha=0.9)
-        econ(ax, lab)
+        pb, pa = norm_path(bt), norm_path(an)
+        ax.plot(x, pb, color=BLUE, lw=2.2, zorder=3)
+        ax.plot(x, pa, color=RED, lw=1.9, zorder=2, alpha=0.9)
+        econ(ax, lab.replace("\n", " "))
+        ax.title.set_fontsize(11.5)
         ax.set_xticks([])
         ax.set_yticks([-2, 0, 2])
-        ax.set_ylim(-2.9, 2.9)
-        from analogues import dtw_distance
-        d = dtw_distance(norm_path(bt), norm_path(an))
-        ax.annotate(f"DTW {d:.3f}", xy=(0.97, 0.045), xycoords="axes fraction",
-                   fontsize=8, color=GREY, ha="right")
+        ax.tick_params(axis="y", labelsize=10)
+        ax.set_ylim(-3.0, 3.0)
+        ax.annotate(f"DTW {dtw_distance(pb, pa):.3f}", xy=(0.97, 0.05),
+                   xycoords="axes fraction", fontsize=10, color=GREY,
+                   ha="right")
 
-    fig.text(0.735, 0.875, "Bitcoin", fontsize=9.5, color=BLUE, weight="bold")
-    fig.text(0.805, 0.875, "analogue", fontsize=9.5, color=RED, weight="bold")
-    fig.text(0.04, 0.035, "Left-hand panels daily data, right-hand two monthly. "
-                          "Sources: CoinMetrics; FRED; LBMA; OECD; Kenneth "
-                          "French data library; author's calculations",
-            fontsize=7.4, color=GREY, style="italic")
+    # spare cell: legend
+    axl = fig.add_subplot(gs[1, 2])
+    axl.axis("off")
+    axl.plot([0.06, 0.24], [0.66, 0.66], color=BLUE, lw=2.6,
+            transform=axl.transAxes)
+    axl.text(0.30, 0.66, "Bitcoin", transform=axl.transAxes, fontsize=13,
+            color=BLUE, weight="bold", va="center")
+    axl.plot([0.06, 0.24], [0.50, 0.50], color=RED, lw=2.3,
+            transform=axl.transAxes)
+    axl.text(0.30, 0.50, "analogue", transform=axl.transAxes, fontsize=13,
+            color=RED, weight="bold", va="center")
+    axl.text(0.06, 0.29, "Amplitude is normalised away,\nso these compare SHAPE, "
+                        "not size.\nSee the next chart for the\ndimensions where "
+                        "they differ.", transform=axl.transAxes, fontsize=9.5,
+            color=GREY, va="top")
+
+    fig.text(0.05, 0.022, "First three panels daily data, last two monthly. "
+                         "Sources: CoinMetrics; FRED; LBMA; OECD; Kenneth "
+                         "French data library; author's calculations",
+            fontsize=9, color=GREY, style="italic")
     out = FIG / "essay_analogue_paths.png"
     fig.savefig(out, dpi=200, facecolor=SURFACE)
     plt.close(fig)
@@ -146,11 +171,17 @@ def figure_paths(daily, monthly, btc_d, btc_m):
 
 
 def figure_features(daily, monthly, btc_d, btc_m, bench_d, bench_m):
-    """Where the matches hold and where they fail."""
+    """Where the matches hold and where they fail. 6 features on a 2x3 grid.
+
+    One row of six panels leaves each too narrow to label; 2x3 doubles the width
+    and lets the pair names and tick labels grow to a readable size.
+    """
+    from matplotlib.patches import Rectangle
+
     show = ["vol_ann", "sharpe", "skew", "max_dd", "rho_eq", "rho_gold"]
-    nice = {"vol_ann": "Volatility", "sharpe": "Sharpe", "skew": "Skew",
-            "max_dd": "Max drawdown", "rho_eq": "Corr. w/ equities",
-            "rho_gold": "Corr. w/ gold"}
+    nice = {"vol_ann": "Volatility", "sharpe": "Sharpe ratio", "skew": "Skew",
+            "max_dd": "Max drawdown", "rho_eq": "Correlation w/ equities",
+            "rho_gold": "Correlation w/ gold"}
 
     rows = []
     for lab, key, a0, a1, b0, b1, freq in PAIRS:
@@ -163,45 +194,56 @@ def figure_features(daily, monthly, btc_d, btc_m, bench_d, bench_m):
                             min_corr_n=20).iloc[0]
         fb = window_features(bt, bench, per, len(bt), np.array([0]),
                             min_corr_n=20).iloc[0]
+        short = (lab.replace("\n", " ")
+                 .replace("American car makers", "Car makers")
+                 .replace("Turkish equities", "Turkey"))
         for f in show:
-            rows.append({"pair": lab.replace("\n", " "), "feat": nice[f],
+            rows.append({"pair": short, "feat": nice[f],
                         "analogue": fa[f], "btc": fb[f]})
     d = pd.DataFrame(rows)
 
-    fig, axes = plt.subplots(1, len(show), figsize=(13.2, 3.9), sharey=True)
+    fig = plt.figure(figsize=(10.6, 7.6))
     fig.patch.set_facecolor(SURFACE)
-    fig.subplots_adjust(left=0.155, right=0.99, top=0.62, bottom=0.12, wspace=0.28)
+    gs = fig.add_gridspec(2, 3, hspace=0.62, wspace=0.62,
+                          left=0.185, right=0.985, top=0.745, bottom=0.085)
 
-    from matplotlib.patches import Rectangle
-    fig.add_artist(Rectangle((0.04, 0.955), 0.035, 0.022, facecolor=RED,
+    fig.add_artist(Rectangle((0.05, 0.955), 0.045, 0.019, facecolor=RED,
                             edgecolor="none", transform=fig.transFigure))
-    fig.text(0.04, 0.865, "Close on risk, apart on character", fontsize=15,
+    fig.text(0.05, 0.893, "Close on risk, apart on character", fontsize=17,
             weight="bold", color=INK)
-    fig.text(0.04, 0.775, "Risk characteristics of Bitcoin and its matched "
-                          "analogue. Volatility and drawdown are close because "
-                          "that is what the search optimises; the interesting "
-                          "gaps are elsewhere",
-            fontsize=8.6, color=GREY)
+    fig.text(0.05, 0.845, "Volatility and drawdown match because that is what "
+                         "the search optimises", fontsize=11, color=GREY)
+    fig.text(0.05, 0.808, "The informative gaps are in the Sharpe ratio and the "
+                         "correlation with gold", fontsize=9.5, color=GREY)
+    fig.text(0.60, 0.893, "Bitcoin", fontsize=13, color=BLUE, weight="bold")
+    fig.text(0.72, 0.893, "analogue", fontsize=13, color=RED, weight="bold")
 
     pairs = list(dict.fromkeys(d["pair"]))
     y = np.arange(len(pairs))[::-1]
-    for ax, f in zip(axes, [nice[c] for c in show]):
+    for i, f in enumerate([nice[c] for c in show]):
+        ax = fig.add_subplot(gs[i // 3, i % 3])
         sub = d[d["feat"] == f].set_index("pair").loc[pairs]
-        ax.hlines(y, sub["btc"], sub["analogue"], color=GRID, lw=2.2, zorder=1)
-        ax.scatter(sub["analogue"], y, s=46, color=RED, zorder=3)
-        ax.scatter(sub["btc"], y, s=46, color=BLUE, zorder=4)
+        ax.hlines(y, sub["btc"], sub["analogue"], color=GRID, lw=3.0, zorder=1)
+        ax.scatter(sub["analogue"], y, s=72, color=RED, zorder=3)
+        ax.scatter(sub["btc"], y, s=72, color=BLUE, zorder=4)
         econ(ax, f)
+        ax.title.set_fontsize(11.5)
         ax.grid(False, axis="y")
-        ax.grid(True, axis="x", color=GRID, lw=0.6)
-        if f in ("Corr. w/ equities", "Corr. w/ gold", "Sharpe", "Skew"):
-            ax.axvline(0, color=GREY, lw=0.8, zorder=0)
-    axes[0].set_yticks(y)
-    axes[0].set_yticklabels(pairs, fontsize=8.5, color=INK)
-    fig.text(0.735, 0.865, "Bitcoin", fontsize=9.5, color=BLUE, weight="bold")
-    fig.text(0.805, 0.865, "analogue", fontsize=9.5, color=RED, weight="bold")
-    fig.text(0.04, 0.03, "Volatility and drawdown annualised, in return units. "
+        ax.grid(True, axis="x", color=GRID, lw=0.7)
+        ax.tick_params(axis="x", labelsize=10)
+        ax.set_ylim(-0.7, len(pairs) - 0.3)
+        if f in ("Correlation w/ equities", "Correlation w/ gold",
+                 "Sharpe ratio", "Skew"):
+            ax.axvline(0, color=GREY, lw=1.0, zorder=0)
+        if i % 3 == 0:
+            ax.set_yticks(y)
+            ax.set_yticklabels(pairs, fontsize=10.5, color=INK)
+        else:
+            ax.set_yticks([])
+
+    fig.text(0.05, 0.022, "Volatility and drawdown annualised, in return units. "
                          "Sources: as above; author's calculations",
-            fontsize=7.4, color=GREY, style="italic")
+            fontsize=9, color=GREY, style="italic")
     out = FIG / "essay_analogue_features.png"
     fig.savefig(out, dpi=200, facecolor=SURFACE)
     plt.close(fig)

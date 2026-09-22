@@ -35,6 +35,7 @@ echo "== 9/10 analogues incl. emerging markets ==" ; $PY analogues_em.py
 echo "== 10/10 figures =="                          ; $PY figures.py
                                                       $PY fig_essay.py
                                                       $PY fig_essay_analogues.py
+                                                      $PY fig_essay_dollar.py
 
 echo
 echo "done. see REPORT.md, outputs/tables/ and outputs/figures/"

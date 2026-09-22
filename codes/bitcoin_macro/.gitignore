@@ -1,6 +1,9 @@
 # Data is NOT committed: it is downloaded and built by the scripts here.
 #   ./run_all.sh            # fetch -> data/raw/, build -> data/processed/
-data/
+# No trailing slash: 'data/' would match only a directory, and a stray
+# SYMLINK named data would slip through -- which breaks the GitHub Pages
+# Jekyll build, since it refuses to follow symlinks.
+data
 
 # Analysis outputs are regenerable, so only the figures the blog post embeds
 # are tracked. Everything else appears here after a run and stays untracked.

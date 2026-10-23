@@ -2,6 +2,7 @@
 layout: post
 title:  Logistic Regression with Imbalanced Data
 author: <a href="http://chandlerzuo.github.io/">Chandler</a>
+topic: stats
 ---
 
 Logistic regression is a useful model in predicting binary events and has lots of applications. In real life lots of applications target the prediction for risk events. For example, insurance companies need predict the probability of an adverse event, credit companies need predict the credit fraud event. In these cases, the response variable is the binary indicator for the risk event, i.e. 1 if the risk event occurs. The logistic regression model uses a class of predictors to build a function that stand for the probability for such risk event.

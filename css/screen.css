@@ -164,6 +164,17 @@ blockquote {
       float: right;
       color: #aaa;
     }
+  #blogindex .topicnav {
+    margin: 0 1em 1.5em 1em;
+    color: #aaa;
+  }
+  #blogindex h2.topic {
+    margin: 1.5em 1em 0.3em 1em;
+    padding-bottom: 0.2em;
+    border-bottom: 1px solid #ddd;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 
 /* blog post pages */
 

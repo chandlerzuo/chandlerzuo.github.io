@@ -1,0 +1,7 @@
+# Homepage sections, in display order. Each post sets `topic:` to one of these ids.
+- id: finance
+  name: Finance & Economics
+- id: ml
+  name: ML & AI
+- id: stats
+  name: Statistics

@@ -2,6 +2,7 @@
 layout: post
 title:  Trends and Semantics of Inaugural Addresses 
 author: <a href="http://chandlerzuo.github.io/">Chandler</a>
+topic: stats
 ---
 
 As the new president delivered his inaugural speech just 4 days ago, one additional entry was added to the American Inaugural Address Database. As a diligent data scientist, I could not help to ask this question: across the history, what are the trends and patterns of inaugural speeches?

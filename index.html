@@ -4,13 +4,39 @@ title:  Chandler Zuo
 ---
 <div id="blogindex">
 
+  <p class="topicnav">
+    {% for t in site.data.topics %}
+      {% assign n = site.categories.blog | where: "topic", t.id | size %}
+      <a href="#{{ t.id }}" target="_self">{{ t.name }}</a> ({{ n }}){% unless forloop.last %} &middot;{% endunless %}
+    {% endfor %}
+  </p>
 
+  {% for t in site.data.topics %}
+  <h2 class="topic" id="{{ t.id }}">{{ t.name }}</h2>
   <ul class="posts">
-    {% for post in site.categories.blog  %}
+    {% assign posts = site.categories.blog | where: "topic", t.id %}
+    {% for post in posts %}
       <li>
         <a class="postlink" href="{{ post.url }}" target="_self">{{ post.title }}</a>
         <span class="timestamp">{{ post.date | date_to_string }}</span>
       </li>
     {% endfor %}
   </ul>
+  {% endfor %}
+
+  {% comment %} Posts without a valid `topic:` would otherwise vanish from the index. {% endcomment %}
+  {% assign topic_ids = site.data.topics | map: "id" %}
+  {% assign n_other = 0 %}
+  {% for post in site.categories.blog %}{% unless topic_ids contains post.topic %}{% assign n_other = n_other | plus: 1 %}{% endunless %}{% endfor %}
+  {% if n_other > 0 %}
+  <h2 class="topic" id="other">Other</h2>
+  <ul class="posts">
+    {% for post in site.categories.blog %}{% unless topic_ids contains post.topic %}
+      <li>
+        <a class="postlink" href="{{ post.url }}" target="_self">{{ post.title }}</a>
+        <span class="timestamp">{{ post.date | date_to_string }}</span>
+      </li>
+    {% endunless %}{% endfor %}
+  </ul>
+  {% endif %}
 </div>

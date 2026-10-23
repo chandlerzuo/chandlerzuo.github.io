@@ -2,6 +2,7 @@
 layout: post
 title: Translating Data to Reasoning - The Inference Scaling Law
 author: <a href="http://chandlerzuo.github.io/">Chandler</a>
+topic: ml
 ---
 
 **The Traditional Scaling Law**

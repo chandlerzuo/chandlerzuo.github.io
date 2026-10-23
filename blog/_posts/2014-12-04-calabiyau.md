@@ -2,6 +2,7 @@
 layout: post
 title:  Draw the Calabi Yau Manifold in R
 author: <a href="http://chandlerzuo.github.io/">Chandler</a>
+topic: stats
 ---
 
 Perhaps one of the most intriguing scene in the movie "Interstellar" is when Matthew Mcconaughey falls into a five-dimensional space from where he sends messages to his daughter. The way Christopher Nolan presents the five-dimensional space is very eye-catching. Actually, it confused me for a while. The time dimension is represented by a bunch of stacks, each representing a time horizon, and when Matthew peeks through one stack, a three dimensional space unfolds. There are only four dimensions in total. Where is the fifth-dimension?

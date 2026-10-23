@@ -2,6 +2,7 @@
 layout: post
 title:  The Role of Data Annotation in LLM
 author: <a href="http://chandlerzuo.github.io/">Chandler</a>
+topic: ml
 ---
 
 **Data Annotation**

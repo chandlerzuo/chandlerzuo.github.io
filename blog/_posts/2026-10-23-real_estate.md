@@ -2,6 +2,7 @@
 layout: post
 title: Buy or Rent? What a Home Earned in America's Largest Metros, 2010–2026, Against the S&P 500
 author: <a href="http://chandlerzuo.github.io/">Chandler</a>
+topic: finance
 ---
 
 In August 2010 you had a choice. The worst of the housing crash was behind you, though

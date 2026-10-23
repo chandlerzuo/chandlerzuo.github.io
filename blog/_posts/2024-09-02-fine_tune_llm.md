@@ -2,6 +2,7 @@
 layout: post
 title:  Fine Tuning LLM - A Primer
 author: <a href="http://chandlerzuo.github.io/">Chandler</a>
+topic: ml
 ---
 
 **A Brief History of NLP and LLM**

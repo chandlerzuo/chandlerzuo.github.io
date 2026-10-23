@@ -2,6 +2,7 @@
 layout: post
 title: Is Tokenization the Missing Link between LLM and Recommender Systems?
 author: <a href="http://chandlerzuo.github.io/">Chandler</a>
+topic: ml
 ---
 
 **THE ATTEMPT OF GENERATIVE RECOMMENDATION**

@@ -2,6 +2,7 @@
 layout: post
 title:  Inductive Modeling for Realtime Cold Start Recommendations
 author: <a href="http://chandlerzuo.github.io/">Chandler</a>
+topic: ml
 ---
 
 A 2min promotional video for the upcoming paper in KDD '24, Inductive Modeling for Realtime Cold Start Recommendations.

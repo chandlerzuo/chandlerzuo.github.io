@@ -1,0 +1,12 @@
+# Data is NOT committed: it is downloaded and built by the scripts here.
+#   ./run_all.sh            # fetch -> data/raw/, simulate -> data/*.csv
+# No trailing slash, so a stray symlink named data is ignored too (Jekyll on
+# GitHub Pages refuses to follow symlinks).
+data
+
+# Only the figures the blog post embeds are tracked.
+outputs/*
+!outputs/fig*.png
+
+__pycache__/
+*.pyc

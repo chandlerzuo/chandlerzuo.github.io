@@ -37,7 +37,7 @@ real_estate_analysis/
                                # committed for the post), history_summary.csv (not committed)
 ```
 
-The write-up is the blog post `blog/_posts/2026-09-16-real_estate.md`.
+The write-up is the blog post `blog/_posts/2026-10-23-real_estate.md`.
 
 ## Data sources (all public, no API keys)
 

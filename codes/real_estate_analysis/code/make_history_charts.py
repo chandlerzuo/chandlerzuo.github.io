@@ -155,7 +155,7 @@ def fig2():
     bar_axes(ax, s.metro.map(short))
     stacked_bars(ax, s, "irr_cash", ["rent_part", "cap_part"], [EC["blue"], EC["cyan"], EC["yellow"]],
                  ["rent", "cap"], show_parts=False)
-    benchmark_marks(ax, len(s), which=("sp",))
+    benchmark_marks(ax, len(s))
     ax.set_xlim(0, max(SP, s.irr_cash.max()) * 100 + 2)
     fig.savefig(f"{OUT}/fig2_return_sources.png", bbox_inches="tight", pad_inches=0.15)
     plt.close(fig)

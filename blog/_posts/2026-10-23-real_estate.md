@@ -81,13 +81,14 @@ $128,000) and Los Angeles (about $3,700) owe any tax on the sale.
 
 **The sixteen-year result.**
 
-<img src="https://raw.githubusercontent.com/chandlerzuo/chandlerzuo.github.io/master/codes/real_estate_analysis/outputs/fig1_irr_vs_benchmarks.png" width="600" style="display:block; margin:1.5em auto;" />
+<img src="https://raw.githubusercontent.com/chandlerzuo/chandlerzuo.github.io/master/codes/real_estate_analysis/outputs/fig2_return_sources.png" width="600" style="display:block; margin:1.5em auto;" />
 
 Bought with cash, one home beat the after-tax S&P 500: Miami (13.6%). Dallas (12.1%),
 Houston (11.9%) and Atlanta (11.5%) came close. The median metro earned 9.3%, and Silicon Valley (San Jose) 9.5%. The bottom of the table is
-Chicago (8.9%), Washington (8.2%), Philadelphia (8.0%) and New York (6.9%). Every home comfortably beat T-bills and inflation. The highlighted end of each
-bar is the part of the return that came from a property-tax assessment cap, discussed
-below.
+Chicago (8.9%), Washington (8.2%), Philadelphia (8.0%) and New York (6.9%). Every home comfortably beat T-bills and inflation. Each
+bar splits the return into price appreciation (after buying and selling costs and any
+gain tax), the rent not paid net of the costs of owning, and the part that came from a
+property-tax assessment cap, discussed below.
 
 **With a mortgage.**
 
@@ -103,33 +104,25 @@ The chart splits each levered return into four parts, added in order so they sum
 exactly to the IRR:
 - *Price rise.* Buying with 30% down and selling at the 2026 price, after selling costs,
   the loan balance and gain tax, ignoring all monthly flows. This is worth 8.6 (Philadelphia)
-  to 12.9 points (Miami) a year. On its own it would roughly match the index in the best
-  city and trail it everywhere else.
+  to 12.9 points (Miami) a year, and is the largest part everywhere except Houston.
+  San Jose's prices grew fastest of all twelve, 7.3% a year, worth 12.6 points. On its own
+  the price rise would roughly match the index in the best city and trail it everywhere else.
 - *Rent saved.* The monthly rent saved minus the mortgage payment, tax, insurance and
   upkeep. It is what separates the cities: +11.3 points in Houston and +9.0 in Dallas and
   Miami, but about zero in San Jose and slightly negative in New York (−0.3), where the
-  rent saved did not quite cover carrying the loan.
+  rent saved did not quite cover carrying the loan. The winners are the metros where rent
+  was highest relative to price at the start. A Miami house cost about $195,000 in 2010
+  when an equivalent rental went for $1,530 a month, so the rent avoided came to 9.4% of
+  the price. San Jose's $544,000 house would have rented for $2,540, 5.6% of the price,
+  barely enough to carry a 4.4% loan. Except in New York, the mortgage, tax, insurance and
+  upkeep cost less than the rent in every single month. Even in New York owning was
+  cheaper in the first year, and it cost more than renting in only 39 of 191 months.
 - *Interest deduction.* Worth 1.3 to 2.5 points. Without it, eight metros would still
   beat the index; Washington, Philadelphia and Boston would join New York below it.
 - *Assessment cap.* Worth up to 1.1 points (San Jose), about twice the cash case,
-  because the cap savings accrue to a smaller equity stake. Except in New York, the
-mortgage, tax, insurance and upkeep cost less than the rent in every single month. Even
-in New York owning was cheaper in the first year, and it cost more than renting in only
-39 of 191 months.
+  because the cap savings accrue to a smaller equity stake.
 
-**Where the return came from.**
-
-<img src="https://raw.githubusercontent.com/chandlerzuo/chandlerzuo.github.io/master/codes/real_estate_analysis/outputs/fig2_return_sources.png" width="600" style="display:block; margin:1.5em auto;" />
-
-After buying and selling costs and tax, price appreciation alone returned 3.1% (Philadelphia)
-to 6.3% (Miami) a year, all above inflation. The rent the owner did not pay added 2.9 to
-8.1 points a year. It was the larger part in eight metros. In the four where rent was
-lowest relative to price — New York, San Jose, Seattle and Los Angeles — appreciation was
-the larger part; San Jose's prices grew fastest of all twelve, 7.3% a year. The
-winners are again the metros where rent was highest relative to price at the start. A
-Miami house cost about $195,000 in 2010 when an equivalent rental went for $1,530 a month,
-so the rent avoided came to 9.4% of the price. San Jose's $544,000 house would have
-rented for $2,540, 5.6% of the price.
+Together, the price rise and the rent saved make up 84% to 91% of every levered return.
 
 **What property-tax caps are worth.** California's Prop 13 sets a home's taxable value
 at its purchase price and lets it rise at most 2% a year, however fast the market climbs.
@@ -138,7 +131,7 @@ Three other states in the sample cap a homestead's assessment more loosely:
 - *Texas*: 10% a year.
 - *New York City* (one- to three-family homes): 6% a year and 20% over five years.
 
-Figures 1, 2 and 4 show each cap's contribution. To measure it, I re-ran the same
+The first two charts show each cap's contribution. To measure it, I re-ran the same
 purchase with the property tax charged on full market value at the same rate, as if the
 home were reassessed every year. In these states the starting rate is the one recent
 buyers pay, because the all-owner average already includes long-time owners' cap
@@ -289,7 +282,7 @@ Mar 2012 – Feb 2020. Pandemic boom: Feb 2020 – Jun 2022, ending as mortgage 
 5.5% and price growth turned down. High rates: Jun 2022 – Aug 2026. Each window is a
 fresh all-cash purchase at its first month (levered results in the data files use that
 month's PMMS rate: 4.43%, 3.95%, 3.46%, 5.52%), taxed as below, with no buy or sell costs.
-The overall result and figure 5 include both.
+The overall result and the running return since 2010 include both.
 
 *Price.* Zillow Home Value Index (ZHVI), single-family, middle tier (33rd–67th
 percentile), smoothed and seasonally adjusted, monthly.
@@ -344,7 +337,7 @@ value a year. Sensitivity: maintenance 1%.
 - *Pre-tax results.* Kept in the data files as `*_pretax`.
 
 *Transactions.* 3% closing costs at purchase; 6% selling cost (overall result and
-figure 5).
+running returns).
 
 *Financing.* 30% down, 30-year fixed at the Freddie Mac PMMS 30-year fixed rate averaged
 over the purchase month (4.43% for August 2010). The balance remaining at sale is repaid
@@ -354,8 +347,8 @@ paid in cash.
 
 *IRR.* Solved on the monthly cash flows and annualized, $$(1+r_m)^{12} - 1$$; checked
 against an independent solver. Price-only return:
-$$\big[(P_T(1-0.06) - G_T) / (P_0(1+0.03))\big]^{1/16} - 1$$. In figure 2, the rent
-contribution is the all-cash IRR minus this and minus the cap contribution. Figure 4 is an
+$$\big[(P_T(1-0.06) - G_T) / (P_0(1+0.03))\big]^{1/16} - 1$$. In the first chart, the rent
+contribution is the all-cash IRR minus this and minus the cap contribution. The mortgage chart is an
 exact waterfall of the levered IRR, with columns `wf_*_lev`:
 - *Price rise.* The IRR of the down payment and closing costs against the sale proceeds
   net of selling costs, loan payoff and gain tax.
@@ -384,9 +377,9 @@ before and after tax and with and without assessment caps. It writes
 `data/history_units.csv`, `data/history_windows.csv`, `data/benchmarks.csv` and the
 monthly flows in `data/history_cashflows.csv`. It also writes the running IRR
 (`data/history_running.csv`): a mortgage purchase in August 2010 sold in each later
-month, with 3% closing and 6% selling costs, loan payoff and gain tax, after tax. Figure 5
-plots its cumulative return, $$(1+\text{IRR})^{\text{years}} - 1$$, on a log scale.
+month, with 3% closing and 6% selling costs, loan payoff and gain tax, after tax. The chart of the
+2010 buyer plots its cumulative return, $$(1+\text{IRR})^{\text{years}} - 1$$, on a log scale.
 `data/history_running_2023.csv` is the same for a buyer in August 2023 (7.07%), drawn in
-figure 6. `make_history_charts.py` builds the six figures and `outputs/history_summary.csv`.
+the chart that follows it. `make_history_charts.py` builds the six figures and `outputs/history_summary.csv`.
 
 *(c)2017-2026 CHANDLER ZUO ALL RIGHTS PRESERVED*

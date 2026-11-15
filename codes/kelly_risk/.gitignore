@@ -1,0 +1,9 @@
+# Data (CSV from the simulations) is NOT committed: ./run_all.sh rebuilds it.
+data
+
+# Only the figures the blog post embeds are tracked.
+outputs/*
+!outputs/fig*.png
+
+__pycache__/
+*.pyc

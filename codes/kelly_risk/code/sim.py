@@ -1,11 +1,11 @@
-"""Simulation studies for sizing a positive-edge bet: Kelly and friends, and stopping rules.
+"""Simulation studies for a multiplicative random process with positive drift: Kelly fractions and stopping rules.
 
 The game: every period one bet, win +1 per unit staked w.p. p, lose 1 w.p. 1-p (b = 1).
 Kelly fraction f* = 2p - 1. All studies use common random numbers across strategies.
 
-  A. known edge      p = 0.53 for everyone, the trader knows it.
-  B. uncertain edge  trader believes p = 0.53 but the truth is p ~ N(0.52, 0.02^2) per
-                     trader (a backtest that is a bit optimistic, and some have no edge).
+  A. known edge      p = 0.53 for everyone, the path knows it.
+  B. uncertain edge  path believes p = 0.53 but the truth is p ~ N(0.52, 0.02^2) per
+                     path (a backtest that is a bit optimistic, and some have no edge).
   C. theory checks   (i) P(ever fall to x of starting capital) vs the exponent formula,
                      (ii) two-barrier stopping: P(hit floor first) and E[stopping time].
 
@@ -19,11 +19,11 @@ HERE = os.path.dirname(__file__)
 DATA = os.path.abspath(os.path.join(HERE, "..", "data"))
 os.makedirs(DATA, exist_ok=True)
 
-P_BELIEF = 0.53            # win probability the trader believes in
+P_BELIEF = 0.53            # win probability the path believes in
 KELLY = 2 * P_BELIEF - 1   # = 0.06
 N = 1260                   # 5 years of one decision a day
 YEARS = 5
-NP = 20000                 # simulated traders
+NP = 20000                 # simulated paths
 W0 = 1.0
 
 
@@ -33,7 +33,7 @@ def _dd(W, peak):
 
 
 class Strategy:
-    """stake(W, peak, wins, nobs) -> amount to stake; quit(W, peak) -> mask of traders who
+    """stake(W, peak, wins, nobs) -> amount to stake; quit(W, peak) -> mask of paths who
     stop trading for good (they keep their money, earning nothing)."""
     def __init__(self, name, stake, quit=None, group=""):
         self.name, self.stake, self.group = name, stake, group
@@ -54,19 +54,19 @@ def bayes_kelly(c=0.5, a0=200.0):
 
 
 STRATS = [
-    Strategy("Fixed stake, 5% of start", lambda W, peak, wins, nobs: np.full_like(W, 0.05 * W0), group="fixed"),
-    Strategy("1% of equity", frac(1 / 6), group="frac"),
+    Strategy("Fixed bet size, 0.05 W0", lambda W, peak, wins, nobs: np.full_like(W, 0.05 * W0), group="fixed"),
+    Strategy("Fixed fraction 1%", frac(1 / 6), group="frac"),
     Strategy("Quarter Kelly", frac(0.25), group="frac"),
     Strategy("Half Kelly", frac(0.5), group="frac"),
     Strategy("Full Kelly", frac(1.0), group="frac"),
     Strategy("Double Kelly", frac(2.0), group="frac"),
-    Strategy("Half Kelly, drawdown throttle",
+    Strategy("Half Kelly, depth throttle",
              lambda W, peak, wins, nobs: 0.5 * KELLY * W * np.clip(1 - _dd(W, peak) / 0.30, 0, 1), group="rule"),
-    Strategy("Half Kelly, quit at 25% drawdown", frac(0.5), quit=lambda W, peak: _dd(W, peak) >= 0.25, group="stop"),
-    Strategy("Half Kelly, quit at -30% or +100%", frac(0.5),
+    Strategy("Half Kelly, stop at depth 25%", frac(0.5), quit=lambda W, peak: _dd(W, peak) >= 0.25, group="stop"),
+    Strategy("Half Kelly, exit band 0.7 W0 / 2 W0", frac(0.5),
              quit=lambda W, peak: (W <= 0.7 * W0) | (W >= 2.0 * W0), group="stop"),
     Strategy("Bayesian half Kelly", bayes_kelly(0.5), group="rule"),
-    Strategy("Bayesian half Kelly, quit at 25% drawdown", bayes_kelly(0.5),
+    Strategy("Bayesian half Kelly, stop at depth 25%", bayes_kelly(0.5),
              quit=lambda W, peak: _dd(W, peak) >= 0.25, group="stop"),
 ]
 
@@ -146,7 +146,7 @@ def fan_bands(out):
     _, _, X = out["A"]
     rows = []
     for s in STRATS:
-        if s.name in ("Fixed stake, 5% of start", "Quarter Kelly", "Half Kelly", "Full Kelly", "Double Kelly"):
+        if s.name in ("Fixed bet size, 0.05 W0", "Quarter Kelly", "Half Kelly", "Full Kelly", "Double Kelly"):
             for t, q in simulate(s, X, bands=True)["band"]:
                 rows.append(dict(strategy=s.name, t=t, **dict(zip(("p5", "p25", "p50", "p75", "p95"), q))))
     pd.DataFrame(rows).to_csv(os.path.join(DATA, "fan_bands.csv"), index=False)
@@ -263,6 +263,47 @@ def horizon_mdd():
     pd.DataFrame(rows).to_csv(os.path.join(DATA, "horizon_mdd.csv"), index=False)
 
 
+def slln():
+    """Quantiles of S_n / n (S = log of the multiplicative process) for several bet fractions."""
+    n, n_p = 20000, 3000
+    X = draw_small(np.random.default_rng(21), n_p, n)
+    grid = np.unique(np.round(np.logspace(1, np.log10(n), 60)).astype(int))
+    rows = []
+    for c in (0.5, 1.0, 1.5, 2.0):
+        f = c * KELLY; up, dn = np.log1p(f), np.log1p(-f)
+        S = np.zeros(n_p)
+        for t in range(n):
+            S += np.where(X[:, t] > 0, up, dn)
+            if (t + 1) in grid:
+                q = np.percentile(S / (t + 1), [5, 50, 95])
+                rows.append(dict(c=c, n=t + 1, p5=q[0], p50=q[1], p95=q[2], m=log_moments(f)[0]))
+    pd.DataFrame(rows).to_csv(os.path.join(DATA, "slln.csv"), index=False)
+
+
+def competitive():
+    """W_n(rival) / W_n(Kelly) is a nonnegative martingale, so P(sup_n ratio >= K) <= 1/K."""
+    n, n_p = 1260, 40000
+    X = draw_small(np.random.default_rng(31), n_p, n)
+    fs = KELLY
+    rivals = {"Half Kelly": 0.5, "1.5× Kelly": 1.5, "Double Kelly": 2.0, "Chase losses (adaptive)": None}
+    Ks = np.logspace(0, 3, 40)
+    rows = []
+    for name, c in rivals.items():
+        lr = np.zeros(n_p); top = np.zeros(n_p); losses = np.zeros(n_p)
+        for t in range(n):
+            x = X[:, t] > 0
+            if c is None:
+                f = np.minimum(0.5, fs * 2.0 ** losses)
+            else:
+                f = np.full(n_p, c * fs)
+            lr += np.where(x, np.log1p(f) - np.log1p(fs), np.log1p(-f) - np.log1p(-fs))
+            np.maximum(top, lr, out=top)
+            losses = np.where(x, 0, np.minimum(losses + 1, 10))
+        for K in Ks:
+            rows.append(dict(rival=name, K=K, prob=(top >= np.log(K)).mean(), bound=1 / K))
+    pd.DataFrame(rows).to_csv(os.path.join(DATA, "competitive.csv"), index=False)
+
+
 if __name__ == "__main__":
     out = scenarios()
     for tag in "AB":
@@ -270,6 +311,6 @@ if __name__ == "__main__":
         print(out[tag][0].query("segment != segment" if tag == "B" else "index == index").round(4).to_string())
     fan_bands(out)
     frontier(out)
-    hit_check(); barrier_check(); horizon_mdd()
+    hit_check(); barrier_check(); horizon_mdd(); slln(); competitive()
     for f in ("theory_hit", "theory_barrier", "horizon_mdd"):
         print(f); print(pd.read_csv(os.path.join(DATA, f + ".csv")).round(4).to_string())
